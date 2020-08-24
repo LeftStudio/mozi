@@ -11,14 +11,31 @@ class My_NetworkManager : public QObject
 public:
     explicit My_NetworkManager(QObject *parent = nullptr);
 
+    /**
+     * @brief 获取每日一词Token
+     * @param 本地记录的Token
+     */
     void setToken(const QString &token);
     QString token() const { return m_token; }
 
-    QJsonObject getData();                          // 获取每日一词
+    /**
+     * @brief 获取每日一词
+     * @return 每日一词Json
+     */
+    QJsonObject getData();
 
-    QJsonObject queryWord(const QString &keyword);  // 查询
+    /**
+     * @brief 查找关键字
+     * @return 查找结果集
+     */
+    QJsonArray queryWord(const QString &keyword);
 
-    QJsonObject getPoetry(const QString &id);       // 获取诗词详情
+    /**
+     * @brief 获取古诗详情
+     * @param 古诗id
+     * @return 古诗详情Json
+     */
+    QJsonObject getPoetry(const QString &id);
 
 signals:
 

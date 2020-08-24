@@ -25,6 +25,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui(new Ui::MainWidget),
     m_timer(new QTimer(this)),
     m_networkManager(new My_NetworkManager(this)),
+    m_toast(new My_Toast(this)),
     m_shadow_1(new QGraphicsDropShadowEffect(this)),
     m_shadow_2(new QGraphicsDropShadowEffect(this)),
     m_shadow_3(new QGraphicsDropShadowEffect(this)),
@@ -48,6 +49,9 @@ MainWidget::~MainWidget()
     delete ui;
 }
 
+/**
+ * @brief 初始化UI
+ */
 void MainWidget::initUI()
 {
     /* 按钮阴影 */
@@ -88,6 +92,9 @@ void MainWidget::initUI()
     ui->collectionList->setFont(font);
 }
 
+/**
+ * @brief 初始化信号槽
+ */
 void MainWidget::initSignalSlots()
 {
     connect(ui->refreshBtn,&QPushButton::clicked,
@@ -122,22 +129,9 @@ void MainWidget::initSignalSlots()
     });
 }
 
-void MainWidget::refesh()
-{
-    QJsonObject data = m_networkManager->getData();
-
-    if(data.isEmpty())
-    {
-        ui->poetryLabel->setText("数据获取失败");
-        return;
-    }
-
-    QJsonObject origin = data["origin"].toObject();
-    ui->poetryLabel->setText("<html><head/><body><p align=\"center\"><span style=\" font-size:24pt;\">"
-    +data["content"].toString()+"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"                                      // 诗句
-    "——"+origin["dynasty"].toString()+"  "+origin["author"].toString()+"  《"+origin["title"].toString()+"》</span></p></body></html>"); // ————[朝代] [诗人] 《[标题]》
-}
-
+/**
+ * @brief 加载设置
+ */
 void MainWidget::loadSettings()
 {
 #ifdef Q_OS_WIN
@@ -167,6 +161,9 @@ void MainWidget::loadSettings()
     m_settings->endArray();
 }
 
+/**
+ * @brief 保存设置
+ */
 void MainWidget::saveSettings()
 {
     m_settings->setValue("Window/WindowSize", QVariant(this->size()));
@@ -186,6 +183,9 @@ void MainWidget::saveSettings()
     m_settings->endArray();
 }
 
+/**
+ * @brief 关于
+ */
 bool MainWidget::eventFilter(QObject *obj, QEvent *event)
 {
     if(obj == ui->aboutLabel)
@@ -213,6 +213,28 @@ void MainWidget::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
+/**
+ * @brief 刷新每日一词
+ */
+void MainWidget::refesh()
+{
+    QJsonObject data = m_networkManager->getData();
+
+    if(data.isEmpty())
+    {
+        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
+        return;
+    }
+
+    QJsonObject origin = data["origin"].toObject();
+    ui->poetryLabel->setText("<html><head/><body><p align=\"center\"><span style=\" font-size:24pt;\">"
+    +data["content"].toString()+"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"                                      // 诗句
+    "——"+origin["dynasty"].toString()+"  "+origin["author"].toString()+"  《"+origin["title"].toString()+"》</span></p></body></html>"); // ————[朝代] [诗人] 《[标题]》
+}
+
+/**
+ * @brief 查找
+ */
 void MainWidget::on_searchBtn_clicked()
 {
     if(ui->searcbLineEdit->text().isEmpty())
@@ -224,12 +246,12 @@ void MainWidget::on_searchBtn_clicked()
     connect(ui->resultList,&QListWidget::currentItemChanged,
             this,&MainWidget::on_resultList_currentItemChanged);
 
-    /* 获取数据 */
-    QJsonObject resultObj = m_networkManager->queryWord(ui->searcbLineEdit->text());
-    QJsonArray resultArray;
+    ui->searchProgressBar->setMaximum(0);
 
-    if(resultObj["reason"].toString() == "Succes")
-        resultArray = resultObj["result"].toArray();
+    /* 获取数据 */
+    QJsonArray resultArray = m_networkManager->queryWord(ui->searcbLineEdit->text());
+    if(resultArray.isEmpty())
+        m_toast->toast("什么都没找到 ㄟ( ▔, ▔ )ㄏ");
 
     /* 将结果添加到列表 */
     QListWidgetItem *newItem = nullptr;
@@ -238,19 +260,23 @@ void MainWidget::on_searchBtn_clicked()
         newItem = new QListWidgetItem(QString("《%1》").arg(result["name"].toString()), ui->resultList);
         newItem->setData(Qt::StatusTipRole, result["id"]);
     }
+
+    ui->searchProgressBar->setMaximum(100);
 }
 
+/**
+ * @brief 打印查找古诗详情
+ */
 void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
+    ui->searchProgressBar->setMaximum(0);
     ui->resultTextEdit->clear();
 
-    QJsonObject resultObj;
-    QJsonObject reasonObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
-    if(reasonObj["reason"].toString().contains("Succes"))
-        resultObj = reasonObj["result"].toObject();
-    else
+    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
+    if(resultObj.isEmpty())
     {
-        ui->resultTextEdit->setText("数据获取失败");
+        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
+        ui->searchProgressBar->setMaximum(100);
         return;
     }
 
@@ -283,19 +309,22 @@ void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QLis
     ui->resultTextEdit->append(resultObj["jieshao"].toString());
 
     ui->resultTextEdit->moveCursor(QTextCursor::Start);
+    ui->searchProgressBar->setMaximum(100);
 }
 
+/**
+ * @brief 打印收藏古诗详情
+ */
 void MainWidget::on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
+    ui->collectionProgressBar->setMaximum(0);
     ui->collectionTextEdit->clear();
 
-    QJsonObject resultObj;
-    QJsonObject reasonObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
-    if(reasonObj["reason"].toString().contains("Succes"))
-        resultObj = reasonObj["result"].toObject();
-    else
+    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
+    if(resultObj.isEmpty())
     {
-        ui->collectionTextEdit->setText("数据获取失败");
+        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
+        ui->collectionProgressBar->setMaximum(100);
         return;
     }
 
@@ -328,8 +357,12 @@ void MainWidget::on_collectionList_currentItemChanged(QListWidgetItem *current, 
     ui->collectionTextEdit->append(resultObj["jieshao"].toString());
 
     ui->collectionTextEdit->moveCursor(QTextCursor::Start);
+    ui->collectionProgressBar->setMaximum(100);
 }
 
+/**
+ * @brief 收藏
+ */
 void MainWidget::on_collectionBtn_clicked()
 {
     QListWidgetItem *currentItem = ui->resultList->currentItem();
@@ -339,13 +372,21 @@ void MainWidget::on_collectionBtn_clicked()
     for(int i = 0;i < ui->collectionList->count();i++)
     {
         if(ui->collectionList->item(i)->text() == currentItem->text())
+        {
+            m_toast->toast("不要重复收藏哦 (* \"･∀･)ﾉ――◎");
             return;
+        }
     }
 
     QListWidgetItem *newItem = new QListWidgetItem(currentItem->text(), ui->collectionList);
     newItem->setData(Qt::StatusTipRole, currentItem->data(Qt::StatusTipRole));
+
+    m_toast->toast("已收藏 (///ᴗ///)");
 }
 
+/**
+ * @brief 取消收藏
+ */
 void MainWidget::on_cancelBtn_clicked()
 {
     QListWidgetItem *currentItem = ui->collectionList->currentItem();
@@ -353,4 +394,6 @@ void MainWidget::on_cancelBtn_clicked()
         return;
 
     delete ui->collectionList->takeItem(ui->collectionList->row(currentItem));
+
+    m_toast->toast("收藏已取消 (*￣m￣)");
 }

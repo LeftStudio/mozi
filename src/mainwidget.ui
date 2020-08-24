@@ -280,7 +280,10 @@ QPushButton:pressed
 background:rgb(220, 220, 220);
 }</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1">
+      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,1">
+       <property name="spacing">
+        <number>3</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -355,6 +358,31 @@ background:rgb(220, 220, 220);
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="collectionProgressBar">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>5</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QProgressBar
+{
+border:1px solid #FFFFFF;
+background: white;
+}
+
+QProgressBar::chunk
+{
+background-color:#05B8CC;
+}</string>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QSplitter" name="splitter_2">
@@ -469,7 +497,10 @@ QPushButton:pressed
 background:rgb(220, 220, 220);
 }</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1">
+       <property name="spacing">
+        <number>3</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
@@ -630,6 +661,31 @@ padding:5px;
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="searchProgressBar">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>5</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QProgressBar
+{
+border:1px solid #FFFFFF;
+background: white;
+}
+
+QProgressBar::chunk
+{
+background-color:#05B8CC;
+}</string>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QSplitter" name="splitter">

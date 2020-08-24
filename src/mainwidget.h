@@ -5,6 +5,8 @@
 
 #include "my_networkmanager.h"
 
+#include "my_toast.h"
+
 class QGraphicsDropShadowEffect;
 class QListWidgetItem;
 class QGridLayout;
@@ -41,9 +43,11 @@ private:
     Ui::MainWidget *ui;
 
     QTimer *m_timer = nullptr;                      // 刷新冷却
-    QGridLayout *m_layout = nullptr;
     QSettings *m_settings = nullptr;
+    QGridLayout *m_layout = nullptr;
     My_NetworkManager *m_networkManager = nullptr;
+
+    My_Toast *m_toast = nullptr;
 
     QGraphicsDropShadowEffect *m_shadow_1 = nullptr;
     QGraphicsDropShadowEffect *m_shadow_2 = nullptr;

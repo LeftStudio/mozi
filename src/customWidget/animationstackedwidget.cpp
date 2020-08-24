@@ -28,6 +28,9 @@ AnimationStackedWidget::~AnimationStackedWidget()
 
 }
 
+/**
+ * @brief 绘制旋转画面
+ */
 void AnimationStackedWidget::paintEvent(QPaintEvent *event)
 {
     if(m_isAnimating)
@@ -67,6 +70,9 @@ void AnimationStackedWidget::paintEvent(QPaintEvent *event)
         QWidget::paintEvent(event);
 }
 
+/**
+ * @brief 启动动画
+ */
 void AnimationStackedWidget::rotate(int index)
 {
     if(m_isAnimating)
@@ -85,6 +91,9 @@ void AnimationStackedWidget::rotate(int index)
     m_animation->start();
 }
 
+/**
+ * @brief 动画完成
+ */
 void AnimationStackedWidget::on_finished()
 {
     m_rotateValue = 0;

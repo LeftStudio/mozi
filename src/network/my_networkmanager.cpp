@@ -8,6 +8,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QEventLoop>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
@@ -17,7 +18,7 @@ My_NetworkManager::My_NetworkManager(QObject *parent) :
     QObject(parent),
     m_manager(new QNetworkAccessManager(this))
 {
-    //qDebug()<<"QSslSocket = "<<QSslSocket::sslLibraryBuildVersionString();
+    //qDebug()<<"QSslSocket = " << QSslSocket::sslLibraryBuildVersionString();
 }
 
 void My_NetworkManager::setToken(const QString &token)
@@ -63,7 +64,7 @@ QJsonObject My_NetworkManager::getData()
     return resultJson["data"].toObject();
 }
 
-QJsonObject My_NetworkManager::queryWord(const QString &keyword)
+QJsonArray My_NetworkManager::queryWord(const QString &keyword)
 {
     QUrl url("http://api.avatardata.cn/TangShiSongCi/Search");
 
@@ -81,7 +82,7 @@ QJsonObject My_NetworkManager::queryWord(const QString &keyword)
     loop.exec();
 
     QByteArray data = reply->readAll();
-    return QJsonDocument::fromJson(data).object();
+    return QJsonDocument::fromJson(data).object()["result"].toArray();
 }
 
 QJsonObject My_NetworkManager::getPoetry(const QString &id)
@@ -101,5 +102,5 @@ QJsonObject My_NetworkManager::getPoetry(const QString &id)
     loop.exec();
 
     QByteArray data = reply->readAll();
-    return QJsonDocument::fromJson(data).object();
+    return QJsonDocument::fromJson(data).object()["result"].toObject();
 }
