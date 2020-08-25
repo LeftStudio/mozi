@@ -9,6 +9,10 @@
 * 目前只有Win32二进制程序包，Linux暂时无法打包。:confused:（如果有会的大佬可以联系我们 :stuck_out_tongue_winking_eye:）
 ## 运行效果
 ![gif](https://gitee.com/left-studio/mozi/blob/master/run.gif)
+![image](https://gitee.com/left-studio/mozi/tree/master/image/1.png)
+![image](https://gitee.com/left-studio/mozi/tree/master/image/2.png)
+![image](https://gitee.com/left-studio/mozi/tree/master/image/3.png)
+![image](https://gitee.com/left-studio/mozi/tree/master/image/4.png)
 ## 关于我们
 * Left Studio 是一个中学生组成的开源团队，我们希望能开发出更贴近
 人们生活的，有温度的软件。
