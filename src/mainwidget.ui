@@ -19,6 +19,74 @@
   <property name="windowTitle">
    <string>Mozi</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget
+{
+color:black;
+}
+
+QScrollArea {
+border: none;
+background: transparent;
+}
+
+QScrollArea &gt; QWidget &gt; QWidget {
+background: transparent;
+}
+
+QScrollBar:vertical {
+border:none;
+background: transparent;
+width: 10px;
+}
+
+QScrollBar::handle:vertical {
+border-radius:5px;
+background: rgb(233,237,245);
+/*min-height: 60px;*/
+}
+
+QScrollBar::add-line:vertical {
+border: none;
+height: 0px;
+}
+
+QScrollBar::sub-line:vertical {
+border: none;
+height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+background: transparent;
+}
+
+QScrollBar:horizontal {
+border:none;
+background: transparent;
+height:10px
+}
+
+QScrollBar::handle:horizontal {
+border-radius:5px;
+background: rgb(233,237,245);
+/*min-width: 60px;*/
+}
+
+QScrollBar::add-line:horizontal {
+border: none;
+width: 0px;
+}
+
+QScrollBar::sub-line:horizontal {
+border: none;
+width: 0px;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+background:  transparent;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <property name="spacing">
     <number>0</number>
@@ -402,9 +470,15 @@ background:rgb(227,227,227);
           <bool>false</bool>
          </property>
          <widget class="QListWidget" name="collectionList">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>250</width>
+            <width>270</width>
             <height>16777215</height>
            </size>
           </property>
@@ -695,11 +769,17 @@ background-color:#05B8CC;
 background:rgb(227,227,227);
 }</string>
          </property>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="opaqueResize">
+          <bool>true</bool>
+         </property>
          <property name="handleWidth">
-          <number>5</number>
+          <number>4</number>
          </property>
          <property name="childrenCollapsible">
           <bool>false</bool>
@@ -707,13 +787,13 @@ background:rgb(227,227,227);
          <widget class="QListWidget" name="resultList">
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>120</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>250</width>
+            <width>270</width>
             <height>16777215</height>
            </size>
           </property>
@@ -722,6 +802,7 @@ background:rgb(227,227,227);
 {
 background:white;
 border-style:none;
+padding:2px;
 }
 
 QListWidget::item:hover

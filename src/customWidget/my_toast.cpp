@@ -15,6 +15,7 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
 
     m_layout->addWidget(m_messageLabel);
+    m_layout->setContentsMargins(0, 0, 0, 0);
     m_messageLabel->setStyleSheet(style);
     m_messageLabel->setAlignment(Qt::AlignCenter);
     m_messageLabel->setContentsMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
