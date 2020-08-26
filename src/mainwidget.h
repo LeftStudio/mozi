@@ -9,9 +9,7 @@
 
 class QGraphicsDropShadowEffect;
 class QListWidgetItem;
-class QGridLayout;
 class QSettings;
-class QTimer;
 
 namespace Ui {
 class MainWidget;
@@ -42,9 +40,7 @@ private slots:
 private:
     Ui::MainWidget *ui;
 
-    QTimer *m_timer = nullptr;                      // 刷新冷却
     QSettings *m_settings = nullptr;
-    QGridLayout *m_layout = nullptr;
     My_NetworkManager *m_networkManager = nullptr;
 
     My_Toast *m_toast = nullptr;
@@ -66,7 +62,7 @@ private:
     void loadSettings();    // 加载设置
     void saveSettings();    // 保存设置
 
-    bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE ;
+    bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE;
 
     /* 事件重写 */
     void closeEvent(QCloseEvent *) Q_DECL_OVERRIDE;

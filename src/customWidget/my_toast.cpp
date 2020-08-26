@@ -1,3 +1,8 @@
+/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
 #include "my_toast.h"
 
 #include <QTimer>

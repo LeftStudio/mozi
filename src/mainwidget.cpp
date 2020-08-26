@@ -23,7 +23,6 @@
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWidget),
-    m_timer(new QTimer(this)),
     m_networkManager(new My_NetworkManager(this)),
     m_toast(new My_Toast(this)),
     m_shadow_1(new QGraphicsDropShadowEffect(this)),
@@ -97,15 +96,13 @@ void MainWidget::initUI()
  */
 void MainWidget::initSignalSlots()
 {
-    connect(ui->refreshBtn,&QPushButton::clicked,
+    connect(ui->refreshBtn,&QPushButton::clicked,           // 刷新冷却
             [this]{
+        QTimer::singleShot(1000,
+            [this]{ ui->refreshBtn->setEnabled(true); });
+
         ui->refreshBtn->setEnabled(false);
-        m_timer->start(1000);
         this->refesh();
-    });
-    connect(m_timer,&QTimer::timeout,
-            [this]{
-        ui->refreshBtn->setEnabled(true);
     });
     connect(ui->searchPageBtn,&QPushButton::clicked,
             [this]{
