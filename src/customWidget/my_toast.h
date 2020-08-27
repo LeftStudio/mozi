@@ -1,8 +1,9 @@
-#ifndef MY_TOAST_H
+﻿#ifndef MY_TOAST_H
 #define MY_TOAST_H
 
 #include <QLabel>
 
+class QTimer;
 class QHBoxLayout;
 class QPropertyAnimation;
 
@@ -33,6 +34,7 @@ public:
     }
 
 private:
+    QTimer *m_timer = nullptr;
     QLabel *m_messageLabel = nullptr;
     QHBoxLayout *m_layout = nullptr;
     QPropertyAnimation *m_animation = nullptr;

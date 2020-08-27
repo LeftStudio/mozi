@@ -390,7 +390,15 @@ void MainWidget::on_cancelBtn_clicked()
     if(currentItem == nullptr)
         return;
 
-    delete ui->collectionList->takeItem(ui->collectionList->row(currentItem));
+    if(ui->collectionList->count() == 1)
+    {
+        ui->collectionList->disconnect(this);
+        delete ui->collectionList->takeItem(ui->collectionList->row(currentItem));
+        connect(ui->collectionList, &QListWidget::currentItemChanged,
+                this, &MainWidget::on_collectionList_currentItemChanged);
+    }
+    else
+        delete ui->collectionList->takeItem(ui->collectionList->row(currentItem));
 
     m_toast->toast("收藏已取消 (*￣m￣)");
 }

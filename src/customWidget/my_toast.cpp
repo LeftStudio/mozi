@@ -1,4 +1,4 @@
-/********************/
+﻿/********************/
 /*  By Left Studio  */
 /*     @Ho 229      */
 /********************/
@@ -12,6 +12,7 @@
 My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
                    const QString &style) :
     QWidget(parent),
+    m_timer(new QTimer(this)),
     m_messageLabel(new QLabel(this)),
     m_layout(new QHBoxLayout(this)),
     m_animation(new QPropertyAnimation(this, "pos"))
@@ -27,8 +28,13 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
 
     m_animation->setDuration(300);
     m_animation->setEasingCurve(QEasingCurve::OutCubic);
+    connect(m_timer, &QTimer::timeout,
+            [this]{
+        this->close();
+        m_timer->stop();
+    });
     connect(m_animation, &QPropertyAnimation::finished,
-            [this]{ QTimer::singleShot(1000, this, &My_Toast::close); });
+            [this]{ m_timer->start(1000); });
 }
 
 /**
@@ -37,7 +43,10 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
 void My_Toast::toast()
 {
     if(m_isShowing)
-        return;
+    {
+        m_animation->stop();
+        m_timer->stop();
+    }
     else
         m_isShowing = true;
 
