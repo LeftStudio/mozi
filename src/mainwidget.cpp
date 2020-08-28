@@ -10,8 +10,8 @@
 #include <QDebug>
 #include <QSettings>
 #include <QJsonArray>
-#include <QCloseEvent>
 #include <QJsonObject>
+#include <QDesktopServices>
 #include <QGraphicsDropShadowEffect>
 
 #ifdef Q_OS_WIN
@@ -23,6 +23,7 @@
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWidget),
+    m_updater(new My_Updater(this)),
     m_networkManager(new My_NetworkManager(this)),
     m_toast(new My_Toast(this)),
     m_shadow_1(new QGraphicsDropShadowEffect(this)),
@@ -41,6 +42,10 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->aboutLabel_2->installEventFilter(this);
 
     this->refesh();
+
+    m_updater->checkUpdate();
+    if(m_updater->isNeedUpdate())
+        m_toast->toast(QString("发现新版本:%1，点击Mozi 2020跳转到链接").arg(m_updater->latestVersion()));
 }
 
 MainWidget::~MainWidget()
@@ -56,27 +61,27 @@ void MainWidget::initUI()
     /* 按钮阴影 */
     m_shadow_1->setColor(QColor(200,200,200,180));
     m_shadow_1->setBlurRadius(6);
-    m_shadow_1->setOffset(4,4);
+    m_shadow_1->setOffset(3,3);
 
     m_shadow_2->setColor(QColor(200,200,200,180));
     m_shadow_2->setBlurRadius(6);
-    m_shadow_2->setOffset(4,4);
+    m_shadow_2->setOffset(3,3);
 
     m_shadow_3->setColor(QColor(200,200,200,180));
     m_shadow_3->setBlurRadius(6);
-    m_shadow_3->setOffset(4,4);
+    m_shadow_3->setOffset(3,3);
 
     m_shadow_4->setColor(QColor(200,200,200,180));
     m_shadow_4->setBlurRadius(6);
-    m_shadow_4->setOffset(4,4);
+    m_shadow_4->setOffset(3,3);
 
     m_shadow_5->setColor(QColor(200,200,200,180));
     m_shadow_5->setBlurRadius(6);
-    m_shadow_5->setOffset(4,4);
+    m_shadow_5->setOffset(3,3);
 
     m_shadow_6->setColor(QColor(200,200,200,180));
     m_shadow_6->setBlurRadius(6);
-    m_shadow_6->setOffset(4,4);
+    m_shadow_6->setOffset(3,3);
 
     ui->searcbLineEdit->setGraphicsEffect(m_shadow_1);
     ui->searchBtn->setGraphicsEffect(m_shadow_2);
@@ -189,8 +194,13 @@ bool MainWidget::eventFilter(QObject *obj, QEvent *event)
     {
         if(event->type() == QEvent::MouseButtonRelease)
         {
-            ui->stackedWidget->rotate(1);
-            this->setWindowTitle("Mozi - 关于");
+            if(m_updater->isNeedUpdate())
+                QDesktopServices::openUrl(m_updater->downloadUrl());
+            else
+            {
+                ui->stackedWidget->rotate(1);
+                this->setWindowTitle("Mozi - 关于");
+            }
         }
     }
     else if(obj == ui->aboutLabel_2)

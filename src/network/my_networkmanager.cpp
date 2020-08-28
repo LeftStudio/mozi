@@ -37,6 +37,8 @@ void My_NetworkManager::setToken(const QString &token)
         QJsonObject resultJson = QJsonDocument::fromJson(data).object();
 
         m_token = resultJson["data"].toString();
+
+        reply->deleteLater();
     }
     else
         m_token = token;
@@ -61,6 +63,8 @@ QJsonObject My_NetworkManager::getData()
     QByteArray data = reply->readAll();
     QJsonObject resultJson = QJsonDocument::fromJson(data).object();
 
+    reply->deleteLater();
+
     return resultJson["data"].toObject();
 }
 
@@ -82,6 +86,9 @@ QJsonArray My_NetworkManager::queryWord(const QString &keyword)
     loop.exec();
 
     QByteArray data = reply->readAll();
+
+    reply->deleteLater();
+
     return QJsonDocument::fromJson(data).object()["result"].toArray();
 }
 
@@ -102,5 +109,8 @@ QJsonObject My_NetworkManager::getPoetry(const QString &id)
     loop.exec();
 
     QByteArray data = reply->readAll();
+
+    reply->deleteLater();
+
     return QJsonDocument::fromJson(data).object()["result"].toObject();
 }

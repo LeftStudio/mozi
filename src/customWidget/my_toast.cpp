@@ -34,7 +34,7 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
         m_timer->stop();
     });
     connect(m_animation, &QPropertyAnimation::finished,
-            [this]{ m_timer->start(1000); });
+            [this]{ m_timer->start(1200); });
 }
 
 /**

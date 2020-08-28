@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "my_networkmanager.h"
+#include "my_updater.h"
 
 #include "my_toast.h"
 
@@ -41,6 +42,7 @@ private:
     Ui::MainWidget *ui;
 
     QSettings *m_settings = nullptr;
+    My_Updater *m_updater = nullptr;
     My_NetworkManager *m_networkManager = nullptr;
 
     My_Toast *m_toast = nullptr;

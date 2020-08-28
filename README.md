@@ -1,5 +1,5 @@
 # Mozi
-![version](https://img.shields.io/badge/version-1.0.0.4-brightgreen.svg?style=flat-square)
+![version](https://img.shields.io/badge/version-1.0.0.5-brightgreen.svg?style=flat-square)
 ![license](https://img.shields.io/badge/license-GPL--3.0-red.svg?style=flat-square)
 ## 项目介绍
 * Mozi是一个基于 `Qt5` 开发的跨平台桌面诗词软件，我们在学业之余开发了Mozi。
