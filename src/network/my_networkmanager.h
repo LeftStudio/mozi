@@ -1,7 +1,8 @@
-#ifndef MY_NETWORKMANAGER_H
+﻿#ifndef MY_NETWORKMANAGER_H
 #define MY_NETWORKMANAGER_H
 
 #include <QObject>
+#include <QUrlQuery>
 
 class QNetworkAccessManager;
 
@@ -42,6 +43,8 @@ signals:
 private:
     QString m_token;
     QNetworkAccessManager *m_manager = nullptr;
+
+    QByteArray getSignature(QUrlQuery query);
 
 };
 

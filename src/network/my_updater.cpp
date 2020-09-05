@@ -1,4 +1,4 @@
-/********************/
+﻿/********************/
 /*  By Left Studio  */
 /*     @Ho 229      */
 /********************/
@@ -20,7 +20,7 @@ My_Updater::My_Updater(QObject *parent) :
 
 }
 
-void My_Updater::checkUpdate()
+bool My_Updater::checkUpdate()
 {
     const QUrl url("https://gitee.com/api/v5/repos/left-studio/mozi/releases/latest");
 
@@ -35,4 +35,6 @@ void My_Updater::checkUpdate()
 
     m_latestVersion = resultJson["tag_name"].toString();
     m_downloadUrl = resultJson["assets"].toArray()[0].toObject()["browser_download_url"].toString();
+
+    return !(m_latestVersion.isEmpty() && m_downloadUrl.isEmpty());
 }

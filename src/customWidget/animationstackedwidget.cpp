@@ -102,6 +102,6 @@ void AnimationStackedWidget::on_finished()
     this->widget(m_nextIndex)->show();
     this->widget(m_nextIndex)->raise();
 
-    this->setCurrentWidget(widget(m_nextIndex));
+    this->setCurrentWidget(this->widget(m_nextIndex));
     this->repaint();
 }

@@ -6,12 +6,14 @@
 #include "my_networkmanager.h"
 
 #include <QUrl>
-#include <QUrlQuery>
+#include <QDebug>
+#include <QDateTime>
 #include <QEventLoop>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
+#include <QOAuth1Signature>
 #include <QNetworkAccessManager>
 
 My_NetworkManager::My_NetworkManager(QObject *parent) :

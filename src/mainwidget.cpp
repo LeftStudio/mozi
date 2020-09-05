@@ -43,9 +43,13 @@ MainWidget::MainWidget(QWidget *parent) :
 
     this->refesh();
 
-    m_updater->checkUpdate();
-    if(m_updater->isNeedUpdate())
-        m_toast->toast(QString("发现新版本:%1，点击Mozi 2020跳转到链接").arg(m_updater->latestVersion()));
+    if(m_updater->checkUpdate())
+    {
+        if(m_updater->isNeedUpdate())
+            m_toast->toast(QString("发现新版本:%1，点击Mozi 2020跳转到链接").arg(m_updater->latestVersion()));
+    }
+    else
+        m_toast->toast(QString("检查更新失败，当前版本:%1").arg(QApplication::applicationVersion()));
 }
 
 MainWidget::~MainWidget()
@@ -194,7 +198,7 @@ bool MainWidget::eventFilter(QObject *obj, QEvent *event)
     {
         if(event->type() == QEvent::MouseButtonRelease)
         {
-            if(m_updater->isNeedUpdate())
+            if(m_updater->checkUpdate() && m_updater->isNeedUpdate())
                 QDesktopServices::openUrl(m_updater->downloadUrl());
             else
             {

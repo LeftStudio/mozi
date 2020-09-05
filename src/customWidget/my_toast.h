@@ -33,11 +33,16 @@ public:
         this->toast();
     }
 
+private slots:
+    void on_toastClose();
+
 private:
     QTimer *m_timer = nullptr;
     QLabel *m_messageLabel = nullptr;
     QHBoxLayout *m_layout = nullptr;
-    QPropertyAnimation *m_animation = nullptr;
+
+    QPropertyAnimation *m_posAnimation = nullptr;
+    QPropertyAnimation *m_opacityAnimation = nullptr;
 
     bool m_isShowing = false;
 

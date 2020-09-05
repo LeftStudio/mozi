@@ -1,9 +1,8 @@
-#ifndef MY_UPDATER_H
+﻿#ifndef MY_UPDATER_H
 #define MY_UPDATER_H
 
-#define MOZI_CURRENT_VERSION "1.0.0.5"
-
 #include <QObject>
+#include <QApplication>
 
 class QNetworkAccessManager;
 
@@ -13,9 +12,9 @@ class My_Updater : public QObject
 public:
     explicit My_Updater(QObject *parent = nullptr);
 
-    void checkUpdate();
+    bool checkUpdate();
 
-    bool isNeedUpdate(){ return m_latestVersion != MOZI_CURRENT_VERSION; }
+    bool isNeedUpdate(){ return m_latestVersion != QApplication::applicationVersion(); }
 
     QString latestVersion(){ return m_latestVersion; }
     QString downloadUrl(){ return m_downloadUrl; }
