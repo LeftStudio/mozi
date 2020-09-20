@@ -10,6 +10,8 @@
 
 class QGraphicsDropShadowEffect;
 class QListWidgetItem;
+class QProgressBar;
+class QTextEdit;
 class QSettings;
 
 namespace Ui {
@@ -30,13 +32,13 @@ private slots:
 
     void on_searchBtn_clicked();
 
-    void on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
     void on_collectionBtn_clicked();
 
-    void on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
     void on_cancelBtn_clicked();
+
+    void on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
     Ui::MainWidget *ui;
@@ -47,18 +49,17 @@ private:
 
     My_Toast *m_toast = nullptr;
 
-    QGraphicsDropShadowEffect *m_shadow_1 = nullptr;
-    QGraphicsDropShadowEffect *m_shadow_2 = nullptr;
-    QGraphicsDropShadowEffect *m_shadow_3 = nullptr;
-    QGraphicsDropShadowEffect *m_shadow_4 = nullptr;
-    QGraphicsDropShadowEffect *m_shadow_5 = nullptr;
-    QGraphicsDropShadowEffect *m_shadow_6 = nullptr;
+    /* 控件阴影 */
+    QList<QGraphicsDropShadowEffect *> m_shadowList;
 
     /* 初始化 */
     inline void initUI();
     inline void initSignalSlots();
 
     inline void refesh();
+
+    void showResult(QListWidgetItem *currentItem, QTextEdit *textEdit,
+                    QProgressBar* progressBar);
 
     /* 设置操作函数 */
     void loadSettings();    // 加载设置

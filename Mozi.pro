@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network networkauth
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 1.0.0.7       # 1.0.0.7
+VERSION = 1.0.0.8       # 1.0.0.8
 
 CONFIG += c++11
 

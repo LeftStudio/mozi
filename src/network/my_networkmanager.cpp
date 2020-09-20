@@ -13,7 +13,6 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
-#include <QOAuth1Signature>
 #include <QNetworkAccessManager>
 
 My_NetworkManager::My_NetworkManager(QObject *parent) :

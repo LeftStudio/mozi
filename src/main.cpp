@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     a.installTranslator(&qtGloble);
 
     a.setWindowIcon(QIcon(":/images/images/Mozi.ico"));
-    a.setApplicationVersion("1.0.0.7");
+    a.setApplicationVersion("1.0.0.8");
 
 #ifdef Q_OS_WIN
     a.setFont(QFont("Microsoft YaHei",9));

@@ -25,13 +25,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui(new Ui::MainWidget),
     m_updater(new My_Updater(this)),
     m_networkManager(new My_NetworkManager(this)),
-    m_toast(new My_Toast(this)),
-    m_shadow_1(new QGraphicsDropShadowEffect(this)),
-    m_shadow_2(new QGraphicsDropShadowEffect(this)),
-    m_shadow_3(new QGraphicsDropShadowEffect(this)),
-    m_shadow_4(new QGraphicsDropShadowEffect(this)),
-    m_shadow_5(new QGraphicsDropShadowEffect(this)),
-    m_shadow_6(new QGraphicsDropShadowEffect(this))
+    m_toast(new My_Toast(this))
 {
     ui->setupUi(this);
     this->initUI();
@@ -63,36 +57,21 @@ MainWidget::~MainWidget()
 void MainWidget::initUI()
 {
     /* 按钮阴影 */
-    m_shadow_1->setColor(QColor(200,200,200,180));
-    m_shadow_1->setBlurRadius(6);
-    m_shadow_1->setOffset(3,3);
+    for(int i = 0 ; i < 6 ; i++)
+    {
+        m_shadowList.push_back(new QGraphicsDropShadowEffect(this));
 
-    m_shadow_2->setColor(QColor(200,200,200,180));
-    m_shadow_2->setBlurRadius(6);
-    m_shadow_2->setOffset(3,3);
+        m_shadowList.last()->setColor(QColor(200,200,200,180));
+        m_shadowList.last()->setBlurRadius(6);
+        m_shadowList.last()->setOffset(3, 3);
+    }
 
-    m_shadow_3->setColor(QColor(200,200,200,180));
-    m_shadow_3->setBlurRadius(6);
-    m_shadow_3->setOffset(3,3);
-
-    m_shadow_4->setColor(QColor(200,200,200,180));
-    m_shadow_4->setBlurRadius(6);
-    m_shadow_4->setOffset(3,3);
-
-    m_shadow_5->setColor(QColor(200,200,200,180));
-    m_shadow_5->setBlurRadius(6);
-    m_shadow_5->setOffset(3,3);
-
-    m_shadow_6->setColor(QColor(200,200,200,180));
-    m_shadow_6->setBlurRadius(6);
-    m_shadow_6->setOffset(3,3);
-
-    ui->searcbLineEdit->setGraphicsEffect(m_shadow_1);
-    ui->searchBtn->setGraphicsEffect(m_shadow_2);
-    ui->collectionBtn->setGraphicsEffect(m_shadow_3);
-    ui->returnBtn->setGraphicsEffect(m_shadow_4);
-    ui->returnBtn_2->setGraphicsEffect(m_shadow_5);
-    ui->cancelBtn->setGraphicsEffect(m_shadow_6);
+    ui->searcbLineEdit->setGraphicsEffect(m_shadowList.at(0));
+    ui->searchBtn->setGraphicsEffect(m_shadowList.at(1));
+    ui->collectionBtn->setGraphicsEffect(m_shadowList.at(2));
+    ui->returnBtn->setGraphicsEffect(m_shadowList.at(3));
+    ui->returnBtn_2->setGraphicsEffect(m_shadowList.at(4));
+    ui->cancelBtn->setGraphicsEffect(m_shadowList.at(5));
 
     QFont font = ui->resultList->font();
     font.setPointSize(14);
@@ -123,6 +102,7 @@ void MainWidget::initSignalSlots()
         ui->stackedWidget->rotate(2);
         this->setWindowTitle("Mozi - 收藏");
     });
+
     connect(ui->returnBtn,&QPushButton::clicked,
             [this]{
         ui->stackedWidget->rotate(0);
@@ -240,7 +220,7 @@ void MainWidget::refesh()
     QJsonObject origin = data["origin"].toObject();
     ui->poetryLabel->setText("<html><head/><body><p align=\"center\"><span style=\" font-size:24pt;\">"
     +data["content"].toString()+"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"                                      // 诗句
-    "——"+origin["dynasty"].toString()+"  "+origin["author"].toString()+"  《"+origin["title"].toString()+"》</span></p></body></html>"); // ————[朝代] [诗人] 《[标题]》
+            "——"+origin["dynasty"].toString()+"  "+origin["author"].toString()+"  《"+origin["title"].toString()+"》</span></p></body></html>"); // ————[朝代] [诗人] 《[标题]》
 }
 
 /**
@@ -251,18 +231,22 @@ void MainWidget::on_searchBtn_clicked()
     if(ui->searcbLineEdit->text().isEmpty())
         return;
 
-    /* 清空列表 */
-    ui->resultList->disconnect(this);
-    ui->resultList->clear();
-    connect(ui->resultList,&QListWidget::currentItemChanged,
-            this,&MainWidget::on_resultList_currentItemChanged);
-
     ui->searchProgressBar->setMaximum(0);
 
     /* 获取数据 */
     QJsonArray resultArray = m_networkManager->queryWord(ui->searcbLineEdit->text());
     if(resultArray.isEmpty())
+    {
         m_toast->toast("什么都没找到 ㄟ( ▔, ▔ )ㄏ");
+        ui->searchProgressBar->setMaximum(100);
+        return;
+    }
+
+    /* 清空列表 */
+    ui->resultList->disconnect(this);
+    ui->resultList->clear();
+    connect(ui->resultList,&QListWidget::currentItemChanged,this,
+            &MainWidget::on_resultList_currentItemChanged);
 
     /* 将结果添加到列表 */
     QListWidgetItem *newItem = nullptr;
@@ -275,52 +259,61 @@ void MainWidget::on_searchBtn_clicked()
     ui->searchProgressBar->setMaximum(100);
 }
 
+void MainWidget::showResult(QListWidgetItem *currentItem, QTextEdit *textEdit, QProgressBar *progressBar)
+{
+    progressBar->setMaximum(0);
+    QJsonObject resultObj = m_networkManager->getPoetry(currentItem->data(Qt::StatusTipRole).toString());
+    if(resultObj.isEmpty())
+    {
+        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
+        progressBar->setMaximum(100);
+        return;
+    }
+    progressBar->setMaximum(100);
+
+    textEdit->clear();
+
+    QTextCharFormat fmt = textEdit->currentCharFormat();
+
+    textEdit->setAlignment(Qt::AlignCenter);
+
+    /* 打印标题 */
+    fmt.setFontPointSize(22);
+    fmt.setFontWeight(QFont::Bold);
+    textEdit->setCurrentCharFormat(fmt);
+    textEdit->append(resultObj["biaoti"].toString());
+
+    /* 打印作者 */
+    fmt.setFontPointSize(18);
+    fmt.setFontWeight(QFont::Normal);
+    textEdit->setCurrentCharFormat(fmt);
+    textEdit->append(resultObj["zuozhe"].toString() + "\n");
+
+    /* 打印内容 */
+    fmt.setFontPointSize(16);
+    textEdit->setCurrentCharFormat(fmt);
+    textEdit->append(resultObj["neirong"].toString() + "\n");
+
+    textEdit->setAlignment(Qt::AlignLeft);
+
+    QTextBlockFormat blockFmt;
+    blockFmt.setLeftMargin(50);                                 // 间隔
+    textEdit->textCursor().setBlockFormat(blockFmt);
+
+    /* 打印介绍 */
+    fmt.setFontPointSize(12);
+    textEdit->setCurrentCharFormat(fmt);
+    textEdit->append(resultObj["jieshao"].toString());
+
+    textEdit->moveCursor(QTextCursor::Start);
+}
+
 /**
  * @brief 打印查找古诗详情
  */
 void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
-    ui->searchProgressBar->setMaximum(0);
-    ui->resultTextEdit->clear();
-
-    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
-    if(resultObj.isEmpty())
-    {
-        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
-        ui->searchProgressBar->setMaximum(100);
-        return;
-    }
-
-    QTextBlockFormat blockFmt;
-    blockFmt.setLeftMargin(50);                                 // 间隔
-    ui->resultTextEdit->textCursor().setBlockFormat(blockFmt);
-
-    QTextCharFormat fmt = ui->resultTextEdit->currentCharFormat();
-
-    /* 打印标题 */
-    fmt.setFontPointSize(22);
-    fmt.setFontWeight(QFont::Bold);
-    ui->resultTextEdit->setCurrentCharFormat(fmt);
-    ui->resultTextEdit->append(resultObj["biaoti"].toString());
-
-    /* 打印作者 */
-    fmt.setFontPointSize(18);
-    fmt.setFontWeight(QFont::Normal);
-    ui->resultTextEdit->setCurrentCharFormat(fmt);
-    ui->resultTextEdit->append(resultObj["zuozhe"].toString() + "\n");
-
-    /* 打印内容 */
-    fmt.setFontPointSize(16);
-    ui->resultTextEdit->setCurrentCharFormat(fmt);
-    ui->resultTextEdit->append(resultObj["neirong"].toString() + "\n");
-
-    /* 打印介绍 */
-    fmt.setFontPointSize(12);
-    ui->resultTextEdit->setCurrentCharFormat(fmt);
-    ui->resultTextEdit->append(resultObj["jieshao"].toString());
-
-    ui->resultTextEdit->moveCursor(QTextCursor::Start);
-    ui->searchProgressBar->setMaximum(100);
+    this->showResult(current, ui->resultTextEdit, ui->searchProgressBar);
 }
 
 /**
@@ -328,47 +321,7 @@ void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QLis
  */
 void MainWidget::on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
-    ui->collectionProgressBar->setMaximum(0);
-    ui->collectionTextEdit->clear();
-
-    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
-    if(resultObj.isEmpty())
-    {
-        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
-        ui->collectionProgressBar->setMaximum(100);
-        return;
-    }
-
-    QTextBlockFormat blockFmt;
-    blockFmt.setLeftMargin(50);                                 // 间隔
-    ui->collectionTextEdit->textCursor().setBlockFormat(blockFmt);
-
-    QTextCharFormat fmt = ui->collectionTextEdit->currentCharFormat();
-
-    /* 打印标题 */
-    fmt.setFontPointSize(22);
-    fmt.setFontWeight(QFont::Bold);
-    ui->collectionTextEdit->setCurrentCharFormat(fmt);
-    ui->collectionTextEdit->append(resultObj["biaoti"].toString());
-
-    /* 打印作者 */
-    fmt.setFontPointSize(18);
-    fmt.setFontWeight(QFont::Normal);
-    ui->collectionTextEdit->setCurrentCharFormat(fmt);
-    ui->collectionTextEdit->append(resultObj["zuozhe"].toString() + "\n");
-
-    /* 打印内容 */
-    fmt.setFontPointSize(16);
-    ui->collectionTextEdit->setCurrentCharFormat(fmt);
-    ui->collectionTextEdit->append(resultObj["neirong"].toString() + "\n");
-
-    /* 打印介绍 */
-    fmt.setFontPointSize(12);
-    ui->collectionTextEdit->setCurrentCharFormat(fmt);
-    ui->collectionTextEdit->append(resultObj["jieshao"].toString());
-
-    ui->collectionTextEdit->moveCursor(QTextCursor::Start);
-    ui->collectionProgressBar->setMaximum(100);
+    this->showResult(current, ui->collectionTextEdit, ui->collectionProgressBar);
 }
 
 /**
@@ -408,8 +361,8 @@ void MainWidget::on_cancelBtn_clicked()
     {
         ui->collectionList->disconnect(this);
         delete ui->collectionList->takeItem(ui->collectionList->row(currentItem));
-        connect(ui->collectionList, &QListWidget::currentItemChanged,
-                this, &MainWidget::on_collectionList_currentItemChanged);
+        connect(ui->collectionList, &QListWidget::currentItemChanged,this,
+                &MainWidget::on_collectionList_currentItemChanged);
     }
     else
         delete ui->collectionList->takeItem(ui->collectionList->row(currentItem));
