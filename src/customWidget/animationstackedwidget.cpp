@@ -12,7 +12,7 @@
 
 AnimationStackedWidget::AnimationStackedWidget(QWidget *parent) :
     QStackedWidget(parent),
-    m_animation(new QPropertyAnimation(this,"rotateValue"))
+    m_animation(new QPropertyAnimation(this, "rotateValue"))
 {
     m_animation->setDuration(500);
     m_animation->setEasingCurve(QEasingCurve::Linear);
@@ -35,39 +35,28 @@ void AnimationStackedWidget::paintEvent(QPaintEvent *event)
 {
     if(m_isAnimating)
     {
+        QPainter painter(this);
         if(m_rotateValue > 90)
         {
-            QWidget *nextWidget = this->widget(m_nextIndex);
-
-            QPixmap pixmap(nextWidget->size());
-            nextWidget->render(&pixmap);
-
             QTransform transform;
             transform.translate(this->width() / 2, 0);
             transform.rotate(m_rotateValue + 180, Qt::YAxis);
 
-            QPainter painter(this);
             painter.setTransform(transform);
-            painter.drawPixmap(-1 * this->width() / 2, 0, pixmap);
+            painter.drawPixmap(-1 * this->width() / 2, 0, nextPixmap);
         }
         else
         {
-            QWidget *currentWidget = this->currentWidget();
-
-            QPixmap pixmap(currentWidget->size());
-            currentWidget->render(&pixmap);
-
             QTransform transform;
             transform.translate(this->width() / 2, 0);
             transform.rotate(m_rotateValue, Qt::YAxis);
 
-            QPainter painter(this);
             painter.setTransform(transform);
-            painter.drawPixmap(-1 * this->width() / 2, 0, pixmap);
+            painter.drawPixmap(-1 * this->width() / 2, 0, currentPixmap);
         }
     }
     else
-        QWidget::paintEvent(event);
+        QStackedWidget::paintEvent(event);
 }
 
 /**
@@ -80,12 +69,21 @@ void AnimationStackedWidget::rotate(int index)
 
     m_nextIndex = index;
 
-    this->widget(index)->setGeometry(0, 0, this->width(), this->height());
+    QWidget *currentWidget = this->currentWidget();
+    QWidget *nextWidget = this->widget(m_nextIndex);
+
+    nextWidget->setGeometry(0, 0, this->width(), this->height());
 
     m_animation->setStartValue(0);
     m_animation->setEndValue(180);
 
-    this->currentWidget()->hide();
+    currentWidget->hide();
+
+    currentPixmap = QPixmap(currentWidget->size());
+    currentWidget->render(&currentPixmap);
+
+    nextPixmap = QPixmap(nextWidget->size());
+    nextWidget->render(&nextPixmap);
 
     m_isAnimating = true;
     m_animation->start();

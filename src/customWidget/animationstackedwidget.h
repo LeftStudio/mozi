@@ -30,6 +30,9 @@ private:
     bool m_isAnimating = false;
     qreal m_rotateValue = 0;
 
+    QPixmap currentPixmap;
+    QPixmap nextPixmap;
+
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 };
 

@@ -86,9 +86,8 @@ void MainWidget::initSignalSlots()
 {
     connect(ui->refreshBtn,&QPushButton::clicked,           // 刷新冷却
             [this]{
-        QTimer::singleShot(1000,
-            [this]{ ui->refreshBtn->setEnabled(true); });
-
+        QTimer::singleShot(1000, [this]{
+        ui->refreshBtn->setEnabled(true); });
         ui->refreshBtn->setEnabled(false);
         this->refesh();
     });
@@ -229,7 +228,10 @@ void MainWidget::refesh()
 void MainWidget::on_searchBtn_clicked()
 {
     if(ui->searcbLineEdit->text().isEmpty())
+    {
+        m_toast->toast("搜索内容不能为空哦 (;-_-)ᴇᴍᴍᴍ");
         return;
+    }
 
     ui->searchProgressBar->setMaximum(0);
 
@@ -259,61 +261,22 @@ void MainWidget::on_searchBtn_clicked()
     ui->searchProgressBar->setMaximum(100);
 }
 
-void MainWidget::showResult(QListWidgetItem *currentItem, QTextEdit *textEdit, QProgressBar *progressBar)
-{
-    progressBar->setMaximum(0);
-    QJsonObject resultObj = m_networkManager->getPoetry(currentItem->data(Qt::StatusTipRole).toString());
-    if(resultObj.isEmpty())
-    {
-        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
-        progressBar->setMaximum(100);
-        return;
-    }
-    progressBar->setMaximum(100);
-
-    textEdit->clear();
-
-    QTextCharFormat fmt = textEdit->currentCharFormat();
-
-    textEdit->setAlignment(Qt::AlignCenter);
-
-    /* 打印标题 */
-    fmt.setFontPointSize(22);
-    fmt.setFontWeight(QFont::Bold);
-    textEdit->setCurrentCharFormat(fmt);
-    textEdit->append(resultObj["biaoti"].toString());
-
-    /* 打印作者 */
-    fmt.setFontPointSize(18);
-    fmt.setFontWeight(QFont::Normal);
-    textEdit->setCurrentCharFormat(fmt);
-    textEdit->append(resultObj["zuozhe"].toString() + "\n");
-
-    /* 打印内容 */
-    fmt.setFontPointSize(16);
-    textEdit->setCurrentCharFormat(fmt);
-    textEdit->append(resultObj["neirong"].toString() + "\n");
-
-    textEdit->setAlignment(Qt::AlignLeft);
-
-    QTextBlockFormat blockFmt;
-    blockFmt.setLeftMargin(50);                                 // 间隔
-    textEdit->textCursor().setBlockFormat(blockFmt);
-
-    /* 打印介绍 */
-    fmt.setFontPointSize(12);
-    textEdit->setCurrentCharFormat(fmt);
-    textEdit->append(resultObj["jieshao"].toString());
-
-    textEdit->moveCursor(QTextCursor::Start);
-}
-
 /**
  * @brief 打印查找古诗详情
  */
 void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
-    this->showResult(current, ui->resultTextEdit, ui->searchProgressBar);
+    ui->searchProgressBar->setMaximum(0);
+    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
+    if(resultObj.isEmpty())
+    {
+        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
+        ui->searchProgressBar->setMaximum(100);
+        return;
+    }
+    ui->searchProgressBar->setMaximum(100);
+
+    ui->resultTextEdit->printPoetry(resultObj);
 }
 
 /**
@@ -321,7 +284,17 @@ void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QLis
  */
 void MainWidget::on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
-    this->showResult(current, ui->collectionTextEdit, ui->collectionProgressBar);
+    ui->collectionProgressBar->setMaximum(0);
+    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
+    if(resultObj.isEmpty())
+    {
+        m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
+        ui->collectionProgressBar->setMaximum(100);
+        return;
+    }
+    ui->collectionProgressBar->setMaximum(100);
+
+    ui->collectionTextEdit->printPoetry(resultObj);
 }
 
 /**

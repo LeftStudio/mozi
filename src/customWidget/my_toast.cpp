@@ -37,6 +37,7 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
     m_opacityAnimation->setEndValue(0);
 
     connect(m_timer, &QTimer::timeout,this,&My_Toast::on_toastClose);
+    connect(m_opacityAnimation, &QPropertyAnimation::finished, this, &My_Toast::close);
     connect(m_posAnimation, &QPropertyAnimation::finished,
             [this]{ m_timer->start(1100); });
 }
@@ -50,32 +51,25 @@ void My_Toast::toast()
     {
         m_posAnimation->stop();
         m_opacityAnimation->stop();
-        this->setWindowOpacity(1);
         m_timer->stop();
     }
     else
         m_isShowing = true;
 
+    this->setWindowOpacity(1);
     this->show();
     m_posAnimation->start();
 }
 
 void My_Toast::on_toastClose()
 {
-    m_opacityAnimation->start();
-
-    QEventLoop loop;
-    connect(m_opacityAnimation,&QPropertyAnimation::finished,&loop,&QEventLoop::quit);
-    loop.exec();
-
-    this->close();
     m_timer->stop();
+    m_opacityAnimation->start();
 }
 
 void My_Toast::closeEvent(QCloseEvent *event)
 {
     m_isShowing = false;
-    this->setWindowOpacity(1);
     QWidget::closeEvent(event);
 }
 

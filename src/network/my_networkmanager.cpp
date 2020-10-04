@@ -6,7 +6,6 @@
 #include "my_networkmanager.h"
 
 #include <QUrl>
-#include <QDebug>
 #include <QDateTime>
 #include <QEventLoop>
 #include <QJsonArray>

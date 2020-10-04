@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QUrlQuery>
+#include <QNetworkReply>
 
 class QNetworkAccessManager;
 
@@ -37,8 +38,6 @@ public:
      * @return 古诗详情Json
      */
     QJsonObject getPoetry(const QString &id);
-
-signals:
 
 private:
     QString m_token;
