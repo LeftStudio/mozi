@@ -2,21 +2,20 @@
 #define ANIMATIONSTACKEDWIDGET_H
 
 #include <QStackedWidget>
-#include <QVariant>
 
-class QPropertyAnimation;
+class QVariantAnimation;
 
 class AnimationStackedWidget : public QStackedWidget
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal rotateValue MEMBER m_rotateValue)
-
 public:
     explicit AnimationStackedWidget(QWidget *parent = nullptr);
     ~AnimationStackedWidget() Q_DECL_OVERRIDE;
 
-    void rotate(int);
+    void rotate(int index, bool exec = true);
+
+    QVariantAnimation* animation() const { return m_animation; }
 
 signals:
 
@@ -24,16 +23,20 @@ private slots:
     void on_finished();
 
 private:
-    QPropertyAnimation *m_animation = nullptr;
+    QVariantAnimation *m_animation = nullptr;
 
     int m_nextIndex;
     bool m_isAnimating = false;
     qreal m_rotateValue = 0;
 
-    QPixmap currentPixmap;
-    QPixmap nextPixmap;
+    QPixmap m_currentPixmap;
+    QPixmap m_nextPixmap;
 
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+    QWidget *m_currentWidget = nullptr;
+    QWidget *m_nextWidget    = nullptr;
+
+    void paintEvent(QPaintEvent *event)   Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 };
 
 #endif // ANIMATIONSTACKEDWIDGET_H

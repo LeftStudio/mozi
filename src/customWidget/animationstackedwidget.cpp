@@ -5,21 +5,25 @@
 
 #include "animationstackedwidget.h"
 
-#include <QPixmap>
 #include <QPainter>
-#include <QTransform>
-#include <QPropertyAnimation>
+#include <QEventLoop>
+#include <QVariantAnimation>
 
 AnimationStackedWidget::AnimationStackedWidget(QWidget *parent) :
     QStackedWidget(parent),
-    m_animation(new QPropertyAnimation(this, "rotateValue"))
+    m_animation(new QVariantAnimation(this))
 {
+    m_animation->setStartValue(0);
+    m_animation->setEndValue(180);
     m_animation->setDuration(500);
     m_animation->setEasingCurve(QEasingCurve::Linear);
 
-    connect(m_animation, &QPropertyAnimation::valueChanged,
-            [this]{ this->repaint(); });
-    connect(m_animation, &QPropertyAnimation::finished, this,
+    connect(m_animation, &QVariantAnimation::valueChanged,
+            [this](const QVariant value){
+        m_rotateValue = value.toInt();
+        this->repaint();
+    });
+    connect(m_animation, &QVariantAnimation::finished, this,
             &AnimationStackedWidget::on_finished);
 }
 
@@ -36,6 +40,7 @@ void AnimationStackedWidget::paintEvent(QPaintEvent *event)
     if(m_isAnimating)
     {
         QPainter painter(this);
+
         if(m_rotateValue > 90)
         {
             QTransform transform;
@@ -43,7 +48,7 @@ void AnimationStackedWidget::paintEvent(QPaintEvent *event)
             transform.rotate(m_rotateValue + 180, Qt::YAxis);
 
             painter.setTransform(transform);
-            painter.drawPixmap(-1 * this->width() / 2, 0, nextPixmap);
+            painter.drawPixmap(-1 * this->width() / 2, 0, m_nextPixmap);
         }
         else
         {
@@ -52,7 +57,7 @@ void AnimationStackedWidget::paintEvent(QPaintEvent *event)
             transform.rotate(m_rotateValue, Qt::YAxis);
 
             painter.setTransform(transform);
-            painter.drawPixmap(-1 * this->width() / 2, 0, currentPixmap);
+            painter.drawPixmap(-1 * this->width() / 2, 0, m_currentPixmap);
         }
     }
     else
@@ -60,33 +65,59 @@ void AnimationStackedWidget::paintEvent(QPaintEvent *event)
 }
 
 /**
+ * @brief 大小调整时更新动画帧
+ */
+void AnimationStackedWidget::resizeEvent(QResizeEvent *event)
+{
+    if(m_isAnimating)
+    {
+        m_nextWidget->setGeometry(0, 0, this->width(), this->height());
+        m_currentWidget->setGeometry(0, 0, this->width(), this->height());
+
+        m_currentPixmap = QPixmap(m_currentWidget->size());
+        m_currentWidget->render(&m_currentPixmap);
+
+        m_nextPixmap = QPixmap(m_nextWidget->size());
+        m_nextWidget->render(&m_nextPixmap);
+    }
+
+    QStackedWidget::resizeEvent(event);
+}
+
+/**
  * @brief 启动动画
  */
-void AnimationStackedWidget::rotate(int index)
+void AnimationStackedWidget::rotate(int index, bool exec)
 {
     if(m_isAnimating)
         return;
 
     m_nextIndex = index;
 
-    QWidget *currentWidget = this->currentWidget();
-    QWidget *nextWidget = this->widget(m_nextIndex);
+    m_currentWidget = this->currentWidget();
+    m_nextWidget = this->widget(m_nextIndex);
 
-    nextWidget->setGeometry(0, 0, this->width(), this->height());
+    if(m_nextWidget == nullptr)
+        return;
 
-    m_animation->setStartValue(0);
-    m_animation->setEndValue(180);
+    m_nextWidget->setGeometry(0, 0, this->width(), this->height());
 
-    currentWidget->hide();
+    m_currentPixmap = QPixmap(m_currentWidget->size());
+    m_currentWidget->render(&m_currentPixmap);
 
-    currentPixmap = QPixmap(currentWidget->size());
-    currentWidget->render(&currentPixmap);
+    m_nextPixmap = QPixmap(m_nextWidget->size());
+    m_nextWidget->render(&m_nextPixmap);
 
-    nextPixmap = QPixmap(nextWidget->size());
-    nextWidget->render(&nextPixmap);
-
+    m_currentWidget->hide();
     m_isAnimating = true;
     m_animation->start();
+
+    if(exec)
+    {
+        QEventLoop loop;
+        connect(m_animation, &QVariantAnimation::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
 }
 
 /**
@@ -97,9 +128,9 @@ void AnimationStackedWidget::on_finished()
     m_rotateValue = 0;
     m_isAnimating = false;
 
-    this->widget(m_nextIndex)->show();
-    this->widget(m_nextIndex)->raise();
+    m_nextWidget->show();
+    m_nextWidget->raise();
 
-    this->setCurrentWidget(this->widget(m_nextIndex));
+    this->setCurrentIndex(m_nextIndex);
     this->repaint();
 }

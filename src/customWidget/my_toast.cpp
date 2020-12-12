@@ -5,17 +5,16 @@
 
 #include "my_toast.h"
 
-#include <QTimer>
-#include <QEventLoop>
 #include <QHBoxLayout>
 #include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
 
-My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
+My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin, int waitMsecs,
                    const QString &style) :
     QWidget(parent),
-    m_timer(new QTimer(this)),
     m_messageLabel(new QLabel(this)),
     m_layout(new QHBoxLayout(this)),
+    m_animation(new QSequentialAnimationGroup(this)),
     m_posAnimation(new QPropertyAnimation(this, "pos")),
     m_opacityAnimation(new QPropertyAnimation(this, "windowOpacity"))
 {
@@ -29,17 +28,20 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
     m_messageLabel->setAlignment(Qt::AlignCenter);
     m_messageLabel->setContentsMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
 
+    /* 显示动画 */
     m_posAnimation->setDuration(300);
     m_posAnimation->setEasingCurve(QEasingCurve::OutCubic);
 
-    m_opacityAnimation->setDuration(300);
+    /* 消失动画 */
+    m_opacityAnimation->setDuration(250);
     m_opacityAnimation->setStartValue(1);
     m_opacityAnimation->setEndValue(0);
 
-    connect(m_timer, &QTimer::timeout,this,&My_Toast::on_toastClose);
-    connect(m_opacityAnimation, &QPropertyAnimation::finished, this, &My_Toast::close);
-    connect(m_posAnimation, &QPropertyAnimation::finished,
-            [this]{ m_timer->start(1100); });
+    m_animation->addAnimation(m_posAnimation);
+    m_animation->addPause(waitMsecs);
+    m_animation->addAnimation(m_opacityAnimation);
+
+    connect(m_animation, &QSequentialAnimationGroup::finished, this, &My_Toast::close);
 }
 
 /**
@@ -47,30 +49,12 @@ My_Toast::My_Toast(QWidget *parent, int horizontalMargin, int verticalMargin,
  */
 void My_Toast::toast()
 {
-    if(m_isShowing)
-    {
-        m_posAnimation->stop();
-        m_opacityAnimation->stop();
-        m_timer->stop();
-    }
-    else
-        m_isShowing = true;
+    if(m_animation->state() == QSequentialAnimationGroup::Running)
+        m_animation->stop();
 
-    this->setWindowOpacity(1);
+    this->setWindowOpacity(1);          // 透明度复位
     this->show();
-    m_posAnimation->start();
-}
-
-void My_Toast::on_toastClose()
-{
-    m_timer->stop();
-    m_opacityAnimation->start();
-}
-
-void My_Toast::closeEvent(QCloseEvent *event)
-{
-    m_isShowing = false;
-    QWidget::closeEvent(event);
+    m_animation->start();
 }
 
 /**
@@ -78,11 +62,14 @@ void My_Toast::closeEvent(QCloseEvent *event)
  */
 void My_Toast::setText(const QString &text)
 {
+    // 自适应大小
     m_messageLabel->setText(text);
     m_messageLabel->adjustSize();
     this->adjustSize();
 
-    int startx = this->parentWidget()->x() + (this->parentWidget()->width() - width()) / 2 + (width() - m_messageLabel->width()) / 2;
+    // 计算动画起止坐标
+    int startx = this->parentWidget()->x() + (this->parentWidget()->width() - this->width())
+            / 2 + (this->width() - m_messageLabel->width()) / 2;
     int starty = this->parentWidget()->y() + this->parentWidget()->height();
     int endy = this->parentWidget()->y() + this->parentWidget()->height() * 3 / 4;
 

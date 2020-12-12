@@ -57,13 +57,16 @@ MainWidget::~MainWidget()
 void MainWidget::initUI()
 {
     /* 按钮阴影 */
+    QGraphicsDropShadowEffect *newShadow = nullptr;
     for(int i = 0 ; i < 6 ; i++)
     {
-        m_shadowList.push_back(new QGraphicsDropShadowEffect(this));
+        newShadow = new QGraphicsDropShadowEffect(this);
 
-        m_shadowList.last()->setColor(QColor(200,200,200,180));
-        m_shadowList.last()->setBlurRadius(6);
-        m_shadowList.last()->setOffset(3, 3);
+        newShadow->setColor(QColor(200,200,200,180));
+        newShadow->setBlurRadius(6);
+        newShadow->setOffset(3, 3);
+
+        m_shadowList.push_back(newShadow);
     }
 
     ui->searcbLineEdit->setGraphicsEffect(m_shadowList.at(0));

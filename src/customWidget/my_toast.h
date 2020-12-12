@@ -6,6 +6,7 @@
 class QTimer;
 class QHBoxLayout;
 class QPropertyAnimation;
+class QSequentialAnimationGroup;
 
 #define DEFULT_TOAST_STYLE "\
 QLabel{\
@@ -22,7 +23,7 @@ class My_Toast : public QWidget
     Q_OBJECT
 public:
     explicit My_Toast(QWidget *parent = nullptr, int horizontalMargin = 12, int verticalMargin = 12,
-                      const QString &style = DEFULT_TOAST_STYLE);
+                      int waitMsecs = 1200, const QString &style = DEFULT_TOAST_STYLE);
 
     void setText(const QString& text);
 
@@ -33,20 +34,13 @@ public:
         this->toast();
     }
 
-private slots:
-    void on_toastClose();
-
 private:
-    QTimer *m_timer = nullptr;
     QLabel *m_messageLabel = nullptr;
     QHBoxLayout *m_layout = nullptr;
 
-    QPropertyAnimation *m_posAnimation = nullptr;
-    QPropertyAnimation *m_opacityAnimation = nullptr;
-
-    bool m_isShowing = false;
-
-    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
+    QSequentialAnimationGroup *m_animation = nullptr;
+    QPropertyAnimation *m_posAnimation     = nullptr;
+    QPropertyAnimation *m_opacityAnimation = nullptr;    
 };
 
 #endif // MY_TOAST_H

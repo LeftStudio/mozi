@@ -31,6 +31,7 @@ bool My_Updater::checkUpdate()
     loop.exec();
 
     QByteArray data = reply->readAll();
+
     QJsonObject resultJson = QJsonDocument::fromJson(data).object();
 
     m_latestVersion = resultJson["tag_name"].toString();
