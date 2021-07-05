@@ -8,7 +8,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 1.0.0.9       # 1.0.0.9
+VERSION = 1.0.1.0      # 1.0.1.0
 
 CONFIG += c++11
 

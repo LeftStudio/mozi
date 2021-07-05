@@ -7,6 +7,12 @@
 
 #include <QPainter>
 
+#ifdef Q_OS_WIN
+# if _MSC_VER >= 1600
+#  pragma execution_character_set("utf-8")
+# endif
+#endif
+
 My_ResultTextEdit::My_ResultTextEdit(QWidget *parent) :
     QTextEdit(parent)
 {
@@ -14,7 +20,7 @@ My_ResultTextEdit::My_ResultTextEdit(QWidget *parent) :
             .scaled(300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
-void My_ResultTextEdit::printPoetry(QJsonObject &resultObj)
+void My_ResultTextEdit::printPoetry(const Poetry& poem)
 {
     this->clear();
 
@@ -22,33 +28,67 @@ void My_ResultTextEdit::printPoetry(QJsonObject &resultObj)
 
     this->setAlignment(Qt::AlignCenter);
 
-    /* 打印标题 */
+    /* Print title */
     fmt.setFontPointSize(22);
     fmt.setFontWeight(QFont::Bold);
     this->setCurrentCharFormat(fmt);
-    this->append(resultObj["biaoti"].toString());
+    this->append(poem.title);
 
-    /* 打印作者 */
+    /* Print author */
     fmt.setFontPointSize(18);
     fmt.setFontWeight(QFont::Normal);
     this->setCurrentCharFormat(fmt);
-    this->append(resultObj["zuozhe"].toString() + "\n");
+    this->append(poem.author + "\n");
 
-    /* 打印内容 */
+    QTextCursor cursor = this->textCursor();
+    QTextBlockFormat blockFmt;
+
+    blockFmt.setLeftMargin(30);                         // 间隔
+    cursor.setBlockFormat(blockFmt);
+    this->setTextCursor(cursor);
+
+    /* Print poetry */
     fmt.setFontPointSize(16);
     this->setCurrentCharFormat(fmt);
-    this->append(resultObj["neirong"].toString() + "\n");
+    this->append(poem.poetry);
 
     this->setAlignment(Qt::AlignLeft);
 
-    QTextBlockFormat blockFmt;
-    blockFmt.setLeftMargin(50);                                 // 间隔
-    this->textCursor().setBlockFormat(blockFmt);
+    /* Print notes */
+    if(!poem.notes.isEmpty())
+    {
+        fmt.setFontPointSize(16);
+        this->setCurrentCharFormat(fmt);
+        this->append("\n注释");
 
-    /* 打印介绍 */
-    fmt.setFontPointSize(12);
-    this->setCurrentCharFormat(fmt);
-    this->append(resultObj["jieshao"].toString());
+        fmt.setFontPointSize(12);
+        this->setCurrentCharFormat(fmt);
+        this->append(poem.notes);
+    }
+
+    /* Print translate */
+    if(!poem.translate.isEmpty())
+    {
+        fmt.setFontPointSize(16);
+        this->setCurrentCharFormat(fmt);
+        this->append("\n翻译");
+
+        fmt.setFontPointSize(12);
+        this->setCurrentCharFormat(fmt);
+        this->append(poem.translate);
+    }
+
+    /* Print description */
+    if(!poem.description.isEmpty())
+    {
+        fmt.setFontPointSize(16);
+        this->setCurrentCharFormat(fmt);
+        this->append("\n赏析");
+
+        fmt.setFontPointSize(12);
+        this->setCurrentCharFormat(fmt);
+        this->append(poem.description);
+    }
 
     this->moveCursor(QTextCursor::Start);
 }

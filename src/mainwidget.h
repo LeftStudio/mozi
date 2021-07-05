@@ -1,4 +1,9 @@
-﻿#ifndef MAINWIDGET_H
+﻿/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
+#ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
 #include <QWidget>
@@ -41,6 +46,8 @@ private slots:
     void on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
     void on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void on_loadMoreBtn_clicked();
 
 private:
     Ui::MainWidget *ui;

@@ -1,4 +1,9 @@
-﻿#ifndef MY_UPDATER_H
+﻿/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
+#ifndef MY_UPDATER_H
 #define MY_UPDATER_H
 
 #include <QObject>

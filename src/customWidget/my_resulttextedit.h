@@ -1,5 +1,12 @@
-﻿#ifndef MY_RESULTTEXTEDIT_H
+﻿/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
+#ifndef MY_RESULTTEXTEDIT_H
 #define MY_RESULTTEXTEDIT_H
+
+#include "poetry.h"
 
 #include <QTextEdit>
 #include <QJsonObject>
@@ -10,7 +17,7 @@ class My_ResultTextEdit : public QTextEdit
 public:
     explicit My_ResultTextEdit(QWidget *parent = nullptr);
 
-    void printPoetry(QJsonObject &resultObj);
+    void printPoetry(const Poetry& poem);
 
 signals:
 

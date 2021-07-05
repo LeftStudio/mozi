@@ -1,9 +1,18 @@
-﻿#ifndef MY_NETWORKMANAGER_H
+﻿/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
+#ifndef MY_NETWORKMANAGER_H
 #define MY_NETWORKMANAGER_H
+
+#include "poetry.h"
 
 #include <QObject>
 #include <QUrlQuery>
 #include <QNetworkReply>
+
+typedef QList<Poetry> PoetryList;
 
 class QNetworkAccessManager;
 
@@ -22,29 +31,41 @@ public:
 
     /**
      * @brief 获取每日一词
-     * @return 每日一词Json
+     * @return Poetry
      */
-    QJsonObject getData();
+    const Poetry dailyPoetry();
 
     /**
      * @brief 查找关键字
      * @return 查找结果集
      */
-    QJsonArray queryWord(const QString &keyword);
+    const PoetryList search(const QString &keyword);
 
     /**
      * @brief 获取古诗详情
-     * @param 古诗id
-     * @return 古诗详情Json
+     * @param pid Baidu Wenxue PID
+     * @return Poetry
      */
-    QJsonObject getPoetry(const QString &id);
+    const Poetry detail(const Poetry &oldPoetry);
+
+    bool hasMore() const { return m_currentPage < m_totalPages; }
+
+    /**
+     * @brief Load more result
+     */
+    const PoetryList loadMore();
 
 private:
     QString m_token;
     QNetworkAccessManager *m_manager = nullptr;
 
-    QByteArray getSignature(QUrlQuery query);
+    QString m_keyword;
+    int m_currentPage = 0;
+    int m_totalPages = 0;
 
+    inline const QByteArray searchInfo() const;
+    inline const PoetryList buildSearchList(const QByteArray &data);
+    inline const Poetry buildPoetry(const QByteArray& data, const Poetry& oldPoetry) const;
 };
 
 #endif // MY_NETWORKMANAGER_H

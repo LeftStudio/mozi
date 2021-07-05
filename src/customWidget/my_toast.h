@@ -1,4 +1,9 @@
-﻿#ifndef MY_TOAST_H
+﻿/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
+#ifndef MY_TOAST_H
 #define MY_TOAST_H
 
 #include <QLabel>

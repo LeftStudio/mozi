@@ -1,4 +1,9 @@
-﻿#ifndef ANIMATIONSTACKEDWIDGET_H
+﻿/********************/
+/*  By Left Studio  */
+/*     @Ho 229      */
+/********************/
+
+#ifndef ANIMATIONSTACKEDWIDGET_H
 #define ANIMATIONSTACKEDWIDGET_H
 
 #include <QStackedWidget>

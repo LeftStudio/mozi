@@ -87,7 +87,7 @@ QScrollBar::sub-page:horizontal {
 background:  transparent;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -106,7 +106,7 @@ background:  transparent;
    <item>
     <widget class="AnimationStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="mainPage">
       <property name="styleSheet">
@@ -291,7 +291,7 @@ color:black;
           </font>
          </property>
          <property name="text">
-          <string>Mozi 2020</string>
+          <string>Mozi 2021</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -565,8 +565,20 @@ QPushButton:pressed
 background:rgb(220, 220, 220);
 }</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1">
+      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
        <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
         <number>5</number>
        </property>
        <item>
@@ -758,20 +770,20 @@ background-color:#05B8CC;
        </item>
        <item>
         <widget class="QSplitter" name="splitter">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">QSplitter::handle
 {
 background:rgb(227,227,227);
 }</string>
          </property>
-         <property name="lineWidth">
-          <number>1</number>
-         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="opaqueResize">
-          <bool>true</bool>
          </property>
          <property name="handleWidth">
           <number>4</number>
@@ -779,21 +791,27 @@ background:rgb(227,227,227);
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QListWidget" name="resultList">
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>270</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QListWidget
+         <widget class="QWidget" name="">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
+           </property>
+           <item>
+            <widget class="QListWidget" name="resultList">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>300</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QListWidget
 {
 background:white;
 border-style:none;
@@ -817,7 +835,29 @@ QListWidget::item::selected:active
 {
 color:rgb(114,122,121);
 }</string>
-          </property>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="loadMoreBtn">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>35</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>300</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>加载更多</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
          <widget class="My_ResultTextEdit" name="resultTextEdit">
           <property name="font">

@@ -40,10 +40,12 @@ MainWidget::MainWidget(QWidget *parent) :
     if(m_updater->checkUpdate())
     {
         if(m_updater->isNeedUpdate())
-            m_toast->toast(QString("发现新版本:%1，点击Mozi 2020跳转到链接").arg(m_updater->latestVersion()));
+            m_toast->toast(QString("发现新版本:%1，点击Mozi 2021跳转到链接")
+                           .arg(m_updater->latestVersion()));
     }
     else
-        m_toast->toast(QString("检查更新失败，当前版本:%1").arg(QApplication::applicationVersion()));
+        m_toast->toast(QString("检查更新失败，当前版本:%1")
+                       .arg(QApplication::applicationVersion()));
 }
 
 MainWidget::~MainWidget()
@@ -80,6 +82,8 @@ void MainWidget::initUI()
     font.setPointSize(14);
     ui->resultList->setFont(font);
     ui->collectionList->setFont(font);
+
+    ui->loadMoreBtn->hide();
 }
 
 /**
@@ -87,30 +91,30 @@ void MainWidget::initUI()
  */
 void MainWidget::initSignalSlots()
 {
-    connect(ui->refreshBtn,&QPushButton::clicked,           // 刷新冷却
+    connect(ui->refreshBtn, &QPushButton::clicked, this,           // 刷新冷却
             [this]{
-        QTimer::singleShot(1000, [this]{
-        ui->refreshBtn->setEnabled(true); });
+        QTimer::singleShot(1000, this, [this]{ ui->refreshBtn->setEnabled(true); });
+
         ui->refreshBtn->setEnabled(false);
         this->refesh();
     });
-    connect(ui->searchPageBtn,&QPushButton::clicked,
+    connect(ui->searchPageBtn, &QPushButton::clicked, this,
             [this]{
         ui->stackedWidget->rotate(3);
         this->setWindowTitle("Mozi - 搜索");
     });
-    connect(ui->collectionPageBtn,&QPushButton::clicked,
+    connect(ui->collectionPageBtn, &QPushButton::clicked, this,
             [this]{
         ui->stackedWidget->rotate(2);
         this->setWindowTitle("Mozi - 收藏");
     });
 
-    connect(ui->returnBtn,&QPushButton::clicked,
+    connect(ui->returnBtn, &QPushButton::clicked, this,
             [this]{
         ui->stackedWidget->rotate(0);
         this->setWindowTitle("Mozi");
     });
-    connect(ui->returnBtn_2,&QPushButton::clicked,
+    connect(ui->returnBtn_2, &QPushButton::clicked, this,
             [this]{
         ui->stackedWidget->rotate(0);
         this->setWindowTitle("Mozi");
@@ -142,9 +146,16 @@ void MainWidget::loadSettings()
     for(int i = 0;i < size ;i++)
     {
         m_settings->setArrayIndex(i);
-        newItem = new QListWidgetItem(m_settings->value("Title").toString(),
-                                      ui->collectionList);
-        newItem->setData(Qt::StatusTipRole, m_settings->value("ID"));
+
+        Poetry poetry;
+        poetry.pid = m_settings->value("PID").toString();
+        poetry.title = m_settings->value("Title").toString();
+        poetry.author = m_settings->value("Author").toString();
+        poetry.poetry = m_settings->value("Poetry").toString();
+        poetry.dynasty = m_settings->value("Dynasty").toString();
+
+        newItem = new QListWidgetItem("《" + poetry.title + "》", ui->collectionList);
+        newItem->setData(Qt::StatusTipRole, QVariant::fromValue<Poetry>(poetry));
     }
     m_settings->endArray();
 }
@@ -165,8 +176,13 @@ void MainWidget::saveSettings()
     {
         m_settings->setArrayIndex(i);
         item = ui->collectionList->item(i);
-        m_settings->setValue("Title", item->text());
-        m_settings->setValue("ID", item->data(Qt::StatusTipRole));
+
+        const Poetry poetry = item->data(Qt::StatusTipRole).value<Poetry>();
+        m_settings->setValue("PID", poetry.pid);
+        m_settings->setValue("Title", poetry.title);
+        m_settings->setValue("Author", poetry.author);
+        m_settings->setValue("Poetry", poetry.poetry);
+        m_settings->setValue("Dynasty", poetry.dynasty);
     }
     m_settings->endArray();
 }
@@ -211,18 +227,17 @@ void MainWidget::closeEvent(QCloseEvent *event)
  */
 void MainWidget::refesh()
 {
-    QJsonObject data = m_networkManager->getData();
+    const Poetry result = m_networkManager->dailyPoetry();
 
-    if(data.isEmpty())
+    if(result.isEmpty())
     {
         m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
         return;
     }
 
-    QJsonObject origin = data["origin"].toObject();
     ui->poetryLabel->setText("<html><head/><body><p align=\"center\"><span style=\" font-size:24pt;\">"
-    +data["content"].toString()+"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"                                      // 诗句
-            "——"+origin["dynasty"].toString()+"  "+origin["author"].toString()+"  《"+origin["title"].toString()+"》</span></p></body></html>"); // ————[朝代] [诗人] 《[标题]》
+    + result.poetry +"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"
+    "——" + result.dynasty + "  " + result.author + "  《" + result.title +"》</span></p></body></html>");
 }
 
 /**
@@ -239,8 +254,8 @@ void MainWidget::on_searchBtn_clicked()
     ui->searchProgressBar->setMaximum(0);
 
     /* 获取数据 */
-    QJsonArray resultArray = m_networkManager->queryWord(ui->searcbLineEdit->text());
-    if(resultArray.isEmpty())
+    const PoetryList resultList = m_networkManager->search(ui->searcbLineEdit->text());
+    if(resultList.isEmpty())
     {
         m_toast->toast("什么都没找到 ㄟ( ▔, ▔ )ㄏ");
         ui->searchProgressBar->setMaximum(100);
@@ -250,16 +265,18 @@ void MainWidget::on_searchBtn_clicked()
     /* 清空列表 */
     ui->resultList->disconnect(this);
     ui->resultList->clear();
-    connect(ui->resultList,&QListWidget::currentItemChanged,this,
+    connect(ui->resultList, &QListWidget::currentItemChanged, this,
             &MainWidget::on_resultList_currentItemChanged);
 
     /* 将结果添加到列表 */
     QListWidgetItem *newItem = nullptr;
-    for(QJsonValue result : resultArray)
+    for(const Poetry &result : resultList)
     {
-        newItem = new QListWidgetItem(QString("《%1》").arg(result["name"].toString()), ui->resultList);
-        newItem->setData(Qt::StatusTipRole, result["id"]);
+        newItem = new QListWidgetItem(QString("《%1》").arg(result.title), ui->resultList);
+        newItem->setData(Qt::StatusTipRole, QVariant::fromValue<Poetry>(result));
     }
+
+    ui->loadMoreBtn->setHidden(!m_networkManager->hasMore());
 
     ui->searchProgressBar->setMaximum(100);
 }
@@ -270,8 +287,10 @@ void MainWidget::on_searchBtn_clicked()
 void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
     ui->searchProgressBar->setMaximum(0);
-    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
-    if(resultObj.isEmpty())
+    const Poetry result = m_networkManager->detail(
+                current->data(Qt::StatusTipRole).value<Poetry>());
+
+    if(result.isEmpty())
     {
         m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
         ui->searchProgressBar->setMaximum(100);
@@ -279,7 +298,7 @@ void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QLis
     }
     ui->searchProgressBar->setMaximum(100);
 
-    ui->resultTextEdit->printPoetry(resultObj);
+    ui->resultTextEdit->printPoetry(result);
 }
 
 /**
@@ -288,8 +307,10 @@ void MainWidget::on_resultList_currentItemChanged(QListWidgetItem *current, QLis
 void MainWidget::on_collectionList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
 {
     ui->collectionProgressBar->setMaximum(0);
-    QJsonObject resultObj = m_networkManager->getPoetry(current->data(Qt::StatusTipRole).toString());
-    if(resultObj.isEmpty())
+    const Poetry result = m_networkManager->detail(
+                current->data(Qt::StatusTipRole).value<Poetry>());
+
+    if(result.isEmpty())
     {
         m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
         ui->collectionProgressBar->setMaximum(100);
@@ -297,7 +318,7 @@ void MainWidget::on_collectionList_currentItemChanged(QListWidgetItem *current, 
     }
     ui->collectionProgressBar->setMaximum(100);
 
-    ui->collectionTextEdit->printPoetry(resultObj);
+    ui->collectionTextEdit->printPoetry(result);
 }
 
 /**
@@ -345,3 +366,26 @@ void MainWidget::on_cancelBtn_clicked()
 
     m_toast->toast("收藏已取消 (*￣m￣)");
 }
+
+/**
+ * @brief Load more result
+ */
+void MainWidget::on_loadMoreBtn_clicked()
+{
+    ui->searchProgressBar->setMaximum(0);
+
+    const PoetryList resultList = m_networkManager->loadMore();
+
+    /* 将结果添加到列表 */
+    QListWidgetItem *newItem = nullptr;
+    for(const Poetry &result : resultList)
+    {
+        newItem = new QListWidgetItem(QString("《%1》").arg(result.title), ui->resultList);
+        newItem->setData(Qt::StatusTipRole, QVariant::fromValue<Poetry>(result));
+    }
+
+    ui->loadMoreBtn->setHidden(!m_networkManager->hasMore());
+
+    ui->searchProgressBar->setMaximum(100);
+}
+
