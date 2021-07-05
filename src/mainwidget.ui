@@ -106,7 +106,7 @@ background:  transparent;
    <item>
     <widget class="AnimationStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="mainPage">
       <property name="styleSheet">
@@ -482,6 +482,9 @@ background:rgb(227,227,227);
             <height>16777215</height>
            </size>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="styleSheet">
            <string notr="true">QListWidget
 {
@@ -567,7 +570,7 @@ background:rgb(220, 220, 220);
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
        <property name="spacing">
-        <number>2</number>
+        <number>5</number>
        </property>
        <property name="leftMargin">
         <number>5</number>
@@ -791,7 +794,7 @@ background:rgb(227,227,227);
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0">
            <property name="sizeConstraint">
             <enum>QLayout::SetMaximumSize</enum>
@@ -809,6 +812,9 @@ background:rgb(227,227,227);
                <width>300</width>
                <height>16777215</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">QListWidget

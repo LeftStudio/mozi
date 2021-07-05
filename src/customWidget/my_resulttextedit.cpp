@@ -43,7 +43,7 @@ void My_ResultTextEdit::printPoetry(const Poetry& poem)
     QTextCursor cursor = this->textCursor();
     QTextBlockFormat blockFmt;
 
-    blockFmt.setLeftMargin(30);                         // 间隔
+    blockFmt.setLeftMargin(50);                         // 间隔
     cursor.setBlockFormat(blockFmt);
     this->setTextCursor(cursor);
 

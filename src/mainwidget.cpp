@@ -141,7 +141,6 @@ void MainWidget::loadSettings()
 
     this->m_networkManager->setToken(m_settings->value("Mozi/Token").toString());
 
-    QListWidgetItem *newItem = nullptr;
     int size = m_settings->beginReadArray("Collection");
     for(int i = 0;i < size ;i++)
     {
@@ -154,8 +153,7 @@ void MainWidget::loadSettings()
         poetry.poetry = m_settings->value("Poetry").toString();
         poetry.dynasty = m_settings->value("Dynasty").toString();
 
-        newItem = new QListWidgetItem("《" + poetry.title + "》", ui->collectionList);
-        newItem->setData(Qt::StatusTipRole, QVariant::fromValue<Poetry>(poetry));
+        createItem(poetry.title, QVariant::fromValue<Poetry>(poetry), ui->collectionList);
     }
     m_settings->endArray();
 }
@@ -222,6 +220,14 @@ void MainWidget::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
+void MainWidget::createItem(const QString &text, const QVariant& data,
+                            QListWidget *parent)
+{
+    QListWidgetItem *item = new QListWidgetItem(text, parent);
+    item->setData(Qt::StatusTipRole, data);
+    item->setSizeHint({0, LINE_SPACING});
+}
+
 /**
  * @brief 刷新每日一词
  */
@@ -269,12 +275,12 @@ void MainWidget::on_searchBtn_clicked()
             &MainWidget::on_resultList_currentItemChanged);
 
     /* 将结果添加到列表 */
-    QListWidgetItem *newItem = nullptr;
     for(const Poetry &result : resultList)
-    {
-        newItem = new QListWidgetItem(QString("《%1》").arg(result.title), ui->resultList);
-        newItem->setData(Qt::StatusTipRole, QVariant::fromValue<Poetry>(result));
-    }
+        createItem(QString("《%1》").arg(result.title),
+                   QVariant::fromValue<Poetry>(result), ui->resultList);
+
+    if(!resultList.isEmpty())
+        ui->resultList->setCurrentRow(0);
 
     ui->loadMoreBtn->setHidden(!m_networkManager->hasMore());
 
@@ -339,8 +345,7 @@ void MainWidget::on_collectionBtn_clicked()
         }
     }
 
-    QListWidgetItem *newItem = new QListWidgetItem(currentItem->text(), ui->collectionList);
-    newItem->setData(Qt::StatusTipRole, currentItem->data(Qt::StatusTipRole));
+    createItem(currentItem->text(), currentItem->data(Qt::StatusTipRole), ui->collectionList);
 
     m_toast->toast("已收藏 (///ᴗ///)");
 }
@@ -377,12 +382,9 @@ void MainWidget::on_loadMoreBtn_clicked()
     const PoetryList resultList = m_networkManager->loadMore();
 
     /* 将结果添加到列表 */
-    QListWidgetItem *newItem = nullptr;
     for(const Poetry &result : resultList)
-    {
-        newItem = new QListWidgetItem(QString("《%1》").arg(result.title), ui->resultList);
-        newItem->setData(Qt::StatusTipRole, QVariant::fromValue<Poetry>(result));
-    }
+        createItem(QString("《%1》").arg(result.title),
+                   QVariant::fromValue<Poetry>(result), ui->resultList);
 
     ui->loadMoreBtn->setHidden(!m_networkManager->hasMore());
 

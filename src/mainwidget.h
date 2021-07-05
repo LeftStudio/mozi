@@ -14,10 +14,12 @@
 #include "my_toast.h"
 
 #define SHADOW_NUM 6
+#define LINE_SPACING 50
 
 class QGraphicsDropShadowEffect;
 class QListWidgetItem;
 class QProgressBar;
+class QListWidget;
 class QTextEdit;
 class QSettings;
 
@@ -75,6 +77,10 @@ private:
 
     /* 事件重写 */
     void closeEvent(QCloseEvent *) Q_DECL_OVERRIDE;
+
+    static inline void createItem(const QString& text,
+                                              const QVariant &data,
+                                              QListWidget *parent);
 };
 
 #endif // MAINWIDGET_H
