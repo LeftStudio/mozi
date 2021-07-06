@@ -35,7 +35,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->aboutLabel->installEventFilter(this);
     ui->aboutLabel_2->installEventFilter(this);
 
-    this->refesh();
+    this->refresh();
 
     if(m_updater->checkUpdate())
     {
@@ -96,7 +96,7 @@ void MainWidget::initSignalSlots()
         QTimer::singleShot(1000, this, [this]{ ui->refreshBtn->setEnabled(true); });
 
         ui->refreshBtn->setEnabled(false);
-        this->refesh();
+        this->refresh();
     });
     connect(ui->searchPageBtn, &QPushButton::clicked, this,
             [this]{
@@ -231,7 +231,7 @@ void MainWidget::createItem(const QString &text, const QVariant& data,
 /**
  * @brief 刷新每日一词
  */
-void MainWidget::refesh()
+void MainWidget::refresh()
 {
     const Poetry result = m_networkManager->dailyPoetry();
 

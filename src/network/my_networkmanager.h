@@ -43,7 +43,6 @@ public:
 
     /**
      * @brief 获取古诗详情
-     * @param pid Baidu Wenxue PID
      * @return Poetry
      */
     const Poetry detail(const Poetry &oldPoetry);

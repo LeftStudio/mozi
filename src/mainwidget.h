@@ -67,7 +67,7 @@ private:
     inline void initUI();
     inline void initSignalSlots();
 
-    inline void refesh();
+    inline void refresh();       // Refresh the daily poetry
 
     /* 设置操作函数 */
     void loadSettings();    // 加载设置

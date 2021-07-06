@@ -803,13 +803,13 @@ background:rgb(227,227,227);
             <widget class="QListWidget" name="resultList">
              <property name="minimumSize">
               <size>
-               <width>200</width>
+               <width>120</width>
                <height>0</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>300</width>
+               <width>270</width>
                <height>16777215</height>
               </size>
              </property>
