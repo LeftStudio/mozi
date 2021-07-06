@@ -153,7 +153,8 @@ void MainWidget::loadSettings()
         poetry.poetry = m_settings->value("Poetry").toString();
         poetry.dynasty = m_settings->value("Dynasty").toString();
 
-        createItem(poetry.title, QVariant::fromValue<Poetry>(poetry), ui->collectionList);
+        createItem("《" + poetry.title + "》", QVariant::fromValue<Poetry>(poetry),
+                   ui->collectionList);
     }
     m_settings->endArray();
 }
