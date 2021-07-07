@@ -168,7 +168,7 @@ const PoetryList My_NetworkManager::buildSearchList(const QByteArray &data)
         poetry.title = poem["display_name"].toArray().first().toString();
         poetry.dynasty = poem["dynasty"].toArray().first().toString();
         poetry.author = author;
-        poetry.poetry = poem["body"].toArray().first().toString();
+        poetry.poetry = poem["body"].toArray().first().toString().replace("\\n", "\n");
         poetry.pid = poem["sid"].toArray().first().toString();
 
         if(poetry.isEmpty() || poetry.pid.isEmpty())

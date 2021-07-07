@@ -63,6 +63,8 @@ private:
     /* 控件阴影 */
     QVector<QGraphicsDropShadowEffect *> m_shadowList;
 
+    Poetry m_dailyPoetry;
+
     /* 初始化 */
     inline void initUI();
     inline void initSignalSlots();

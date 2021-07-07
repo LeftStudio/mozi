@@ -100,23 +100,29 @@ void MainWidget::initSignalSlots()
     });
     connect(ui->searchPageBtn, &QPushButton::clicked, this,
             [this]{
-        ui->stackedWidget->rotate(3);
+        if(!ui->resultList->count())        // Search daily poetry when the list is empty
+        {
+            ui->searcbLineEdit->setText(m_dailyPoetry.title);
+            this->on_searchBtn_clicked();
+        }
+
+        ui->stackedWidget->moveToIndex(3);
         this->setWindowTitle("Mozi - 搜索");
     });
     connect(ui->collectionPageBtn, &QPushButton::clicked, this,
             [this]{
-        ui->stackedWidget->rotate(2);
+        ui->stackedWidget->moveToIndex(2);
         this->setWindowTitle("Mozi - 收藏");
     });
 
     connect(ui->returnBtn, &QPushButton::clicked, this,
             [this]{
-        ui->stackedWidget->rotate(0);
+        ui->stackedWidget->moveToIndex(0);
         this->setWindowTitle("Mozi");
     });
     connect(ui->returnBtn_2, &QPushButton::clicked, this,
             [this]{
-        ui->stackedWidget->rotate(0);
+        ui->stackedWidget->moveToIndex(0);
         this->setWindowTitle("Mozi");
     });
 }
@@ -142,7 +148,14 @@ void MainWidget::loadSettings()
     this->m_networkManager->setToken(m_settings->value("Mozi/Token").toString());
 
     int size = m_settings->beginReadArray("Collection");
-    for(int i = 0;i < size ;i++)
+
+    if(!size)
+    {
+        m_settings->endArray();
+        return;
+    }
+
+    for(int i = 0; i < size ; i++)
     {
         m_settings->setArrayIndex(i);
 
@@ -156,6 +169,8 @@ void MainWidget::loadSettings()
         createItem("《" + poetry.title + "》", QVariant::fromValue<Poetry>(poetry),
                    ui->collectionList);
     }
+
+    ui->collectionList->setCurrentRow(0);
     m_settings->endArray();
 }
 
@@ -199,7 +214,7 @@ bool MainWidget::eventFilter(QObject *obj, QEvent *event)
                 QDesktopServices::openUrl(m_updater->downloadUrl());
             else
             {
-                ui->stackedWidget->rotate(1);
+                ui->stackedWidget->moveToIndex(1);
                 this->setWindowTitle("Mozi - 关于");
             }
         }
@@ -208,7 +223,7 @@ bool MainWidget::eventFilter(QObject *obj, QEvent *event)
     {
         if(event->type() == QEvent::MouseButtonRelease)
         {
-            ui->stackedWidget->rotate(0);
+            ui->stackedWidget->moveToIndex(0);
             this->setWindowTitle("Mozi");
         }
     }
@@ -234,17 +249,17 @@ void MainWidget::createItem(const QString &text, const QVariant& data,
  */
 void MainWidget::refresh()
 {
-    const Poetry result = m_networkManager->dailyPoetry();
+    m_dailyPoetry = m_networkManager->dailyPoetry();
 
-    if(result.isEmpty())
+    if(m_dailyPoetry.isEmpty())
     {
         m_toast->toast("数据获取失败 （　ﾟ Дﾟ）");
         return;
     }
 
     ui->poetryLabel->setText("<html><head/><body><p align=\"center\"><span style=\" font-size:24pt;\">"
-    + result.poetry +"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"
-    "——" + result.dynasty + "  " + result.author + "  《" + result.title +"》</span></p></body></html>");
+    + m_dailyPoetry.poetry +"</span></p><p align=\"center\"><span style=\" font-size:14pt;\">"
+    "——" + m_dailyPoetry.dynasty + "  " + m_dailyPoetry.author + "  《" + m_dailyPoetry.title +"》</span></p></body></html>");
 }
 
 /**

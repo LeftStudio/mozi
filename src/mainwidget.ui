@@ -87,7 +87,7 @@ QScrollBar::sub-page:horizontal {
 background:  transparent;
 }</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_6">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -104,7 +104,7 @@ background:  transparent;
     <number>0</number>
    </property>
    <item>
-    <widget class="AnimationStackedWidget" name="stackedWidget">
+    <widget class="TranslationStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -112,7 +112,7 @@ background:  transparent;
       <property name="styleSheet">
        <string notr="true">#mainPage
 {
-border-image:url(:/images/images/background.jpg);
+background:white;
 }
 
 QPushButton:hover
@@ -198,12 +198,12 @@ border:1px solid rgb(119,119,119);
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/like.ico</normaloff>:/images/images/like.ico</iconset>
+             <normaloff>:/images/images/like.png</normaloff>:/images/images/like.png</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>27</width>
+             <height>27</height>
             </size>
            </property>
            <property name="flat">
@@ -348,85 +348,19 @@ QPushButton:pressed
 background:rgb(220, 220, 220);
 }</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,1">
-       <property name="spacing">
-        <number>5</number>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <property name="leftMargin">
+        <number>3</number>
        </property>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QPushButton" name="cancelBtn">
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/dislike.ico</normaloff>:/images/images/dislike.ico</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="returnBtn_2">
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/right.ico</normaloff>:/images/images/right.ico</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
+       </property>
        <item>
         <widget class="QProgressBar" name="collectionProgressBar">
          <property name="maximumSize">
@@ -454,39 +388,136 @@ background-color:#05B8CC;
        </item>
        <item>
         <widget class="QSplitter" name="splitter_2">
-         <property name="styleSheet">
-          <string notr="true">QSplitter::handle
-{
-background:rgb(227,227,227);
-}</string>
-         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="handleWidth">
-          <number>5</number>
          </property>
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QListWidget" name="collectionList">
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>270</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QListWidget
+         <widget class="QWidget" name="">
+          <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
+           </property>
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetMaximumSize</enum>
+             </property>
+             <item>
+              <widget class="QPushButton" name="returnBtn_2">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../resource/rec.qrc">
+                 <normaloff>:/images/images/left.png</normaloff>:/images/images/left.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>25</width>
+                 <height>25</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="cancelBtn">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>:/images/images/dislike.ico</normaloff>
+                 <selectedon>:/images/images/unlike.png</selectedon>:/images/images/dislike.ico</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>25</width>
+                 <height>25</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Maximum</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>160</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QListWidget" name="collectionList">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>270</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QListWidget
 {
 background:white;
 border-style:none;
@@ -509,7 +540,10 @@ QListWidget::item::selected:active
 {
 color:rgb(114,122,121);
 }</string>
-          </property>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
          <widget class="My_ResultTextEdit" name="collectionTextEdit">
           <property name="font">
@@ -576,7 +610,7 @@ background:rgb(220, 220, 220);
         <number>5</number>
        </property>
        <property name="topMargin">
-        <number>5</number>
+        <number>2</number>
        </property>
        <property name="rightMargin">
         <number>5</number>
@@ -585,7 +619,64 @@ background:rgb(220, 220, 220);
         <number>5</number>
        </property>
        <item>
+        <widget class="QProgressBar" name="searchProgressBar">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>5</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QProgressBar
+{
+border:1px solid #FFFFFF;
+background: white;
+}
+
+QProgressBar::chunk
+{
+background-color:#05B8CC;
+}</string>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="returnBtn">
+           <property name="minimumSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource/rec.qrc">
+             <normaloff>:/images/images/left.png</normaloff>:/images/images/left.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="collectionBtn">
            <property name="sizePolicy">
@@ -611,12 +702,12 @@ background:rgb(220, 220, 220);
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/like.ico</normaloff>:/images/images/like.ico</iconset>
+             <normaloff>:/images/images/like.png</normaloff>:/images/images/like.png</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>25</width>
+             <height>25</height>
             </size>
            </property>
           </widget>
@@ -712,64 +803,7 @@ padding:7px;
            </property>
           </spacer>
          </item>
-         <item>
-          <widget class="QPushButton" name="returnBtn">
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/right.ico</normaloff>:/images/images/right.ico</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QProgressBar" name="searchProgressBar">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QProgressBar
-{
-border:1px solid #FFFFFF;
-background: white;
-}
-
-QProgressBar::chunk
-{
-background-color:#05B8CC;
-}</string>
-         </property>
-         <property name="textVisible">
-          <bool>false</bool>
-         </property>
-        </widget>
        </item>
        <item>
         <widget class="QSplitter" name="splitter">
@@ -900,15 +934,15 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>AnimationStackedWidget</class>
-   <extends>QStackedWidget</extends>
-   <header location="global">animationstackedwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>My_ResultTextEdit</class>
    <extends>QTextEdit</extends>
    <header location="global">my_resulttextedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TranslationStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header location="global">translationstackedwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

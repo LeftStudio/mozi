@@ -40,19 +40,19 @@ void My_ResultTextEdit::printPoetry(const Poetry& poem)
     this->setCurrentCharFormat(fmt);
     this->append(poem.author + "\n");
 
+    this->setAlignment(Qt::AlignLeft);
+
     QTextCursor cursor = this->textCursor();
-    QTextBlockFormat blockFmt;
+    QTextBlockFormat blockFmt = cursor.blockFormat();
 
     blockFmt.setLeftMargin(50);                         // 间隔
     cursor.setBlockFormat(blockFmt);
-    this->setTextCursor(cursor);
 
-    /* Print poetry */
     fmt.setFontPointSize(16);
     this->setCurrentCharFormat(fmt);
-    this->append(poem.poetry);
 
-    this->setAlignment(Qt::AlignLeft);
+    /* Print poetry */
+    this->append(poem.poetry);
 
     /* Print notes */
     if(!poem.notes.isEmpty())
