@@ -106,7 +106,7 @@ background:  transparent;
    <item>
     <widget class="TranslationStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="ImageView" name="mainPage">
       <property name="styleSheet">
