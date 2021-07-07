@@ -36,6 +36,12 @@ public:
     const Poetry dailyPoetry();
 
     /**
+     * @brief Get background image reply
+     * @return Image reply
+     */
+    QNetworkReply* imageReply();
+
+    /**
      * @brief 查找关键字
      * @return 查找结果集
      */

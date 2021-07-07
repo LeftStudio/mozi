@@ -7,7 +7,7 @@
 #include "ui_mainwidget.h"
 
 #include <QTimer>
-#include <QDebug>
+#include <QPointer>
 #include <QSettings>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -249,6 +249,13 @@ void MainWidget::createItem(const QString &text, const QVariant& data,
  */
 void MainWidget::refresh()
 {
+    QNetworkReply* reply = m_networkManager->imageReply();
+    QObject::connect(reply, &QNetworkReply::finished, this,
+                     [this, reply] {
+                         ui->mainPage->setPixmapData(reply->readAll());
+                         reply->deleteLater();
+                     });
+
     m_dailyPoetry = m_networkManager->dailyPoetry();
 
     if(m_dailyPoetry.isEmpty())

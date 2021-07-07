@@ -26,20 +26,17 @@ void My_NetworkManager::setToken(const QString &token)
 {
     if(token.isEmpty())
     {
-        const QUrl url("https://v2.jinrishici.com/token");
-
-        QNetworkReply *reply = m_manager->get(QNetworkRequest(url));
+        QPointer<QNetworkReply> reply = m_manager->get(
+            QNetworkRequest({"https://v2.jinrishici.com/token"}));
 
         QEventLoop loop;
-        connect(m_manager,&QNetworkAccessManager::finished,&loop,&QEventLoop::quit);
+        connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         QByteArray data = reply->readAll();
         QJsonObject resultJson = QJsonDocument::fromJson(data).object();
 
         m_token = resultJson["data"].toString();
-
-        reply->deleteLater();
     }
     else
         m_token = token;
@@ -50,15 +47,13 @@ const Poetry My_NetworkManager::dailyPoetry()
     if(m_token.isEmpty())
         return {};
 
-    const QUrl url("https://v2.jinrishici.com/sentence");
-
-    QNetworkRequest request(url);
+    QNetworkRequest request({"https://v2.jinrishici.com/sentence"});
     request.setRawHeader("X-User-Token",m_token.toUtf8());
 
     QNetworkReply *reply = m_manager->get(request);
 
     QEventLoop loop;
-    connect(m_manager,&QNetworkAccessManager::finished,&loop,&QEventLoop::quit);
+    connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
     const QJsonObject resultJson = QJsonDocument::fromJson(
@@ -74,6 +69,14 @@ const Poetry My_NetworkManager::dailyPoetry()
     result.poetry = resultJson["content"].toString();
 
     return result;
+}
+
+QNetworkReply *My_NetworkManager::imageReply()
+{
+    QNetworkRequest request({"https://api.ixiaowai.cn/gqapi/gqapi.php"});
+    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+
+    return m_manager->get(request);
 }
 
 const PoetryList My_NetworkManager::search(const QString &keyword)

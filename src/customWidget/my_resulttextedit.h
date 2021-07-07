@@ -9,7 +9,6 @@
 #include "poetry.h"
 
 #include <QTextEdit>
-#include <QJsonObject>
 
 class My_ResultTextEdit : public QTextEdit
 {

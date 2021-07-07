@@ -106,9 +106,9 @@ background:  transparent;
    <item>
     <widget class="TranslationStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
-     <widget class="QWidget" name="mainPage">
+     <widget class="ImageView" name="mainPage">
       <property name="styleSheet">
        <string notr="true">#mainPage
 {
@@ -394,7 +394,7 @@ background-color:#05B8CC;
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1">
            <property name="spacing">
             <number>10</number>
@@ -833,6 +833,18 @@ background:rgb(227,227,227);
            <property name="sizeConstraint">
             <enum>QLayout::SetMaximumSize</enum>
            </property>
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>3</number>
+           </property>
            <item>
             <widget class="QListWidget" name="resultList">
              <property name="minimumSize">
@@ -942,6 +954,12 @@ p, li { white-space: pre-wrap; }
    <class>TranslationStackedWidget</class>
    <extends>QStackedWidget</extends>
    <header location="global">translationstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ImageView</class>
+   <extends>QWidget</extends>
+   <header location="global">imageview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
