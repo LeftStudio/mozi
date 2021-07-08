@@ -65,7 +65,7 @@ jobs:
         if: startsWith(github.event.ref, 'refs/tags/')
         env:
           VCINSTALLDIR: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC'
-          archiveName: Mozi-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}
+          archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
         shell: pwsh
         run: |
           # 创建文件夹
@@ -75,7 +75,7 @@ jobs:
           # 拷贝依赖
           windeployqt --qmldir . ${env:archiveName}\${env:targetName}
           # 打包zip
-          Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
+          Compress-Archive -Path ${env:archiveName} Mozi-${env:archiveName}'.zip'
           # 记录环境变量packageName给后续step
           $name = ${env:archiveName}
           echo "::set-env name=packageName::$name"
