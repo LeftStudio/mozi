@@ -16,7 +16,6 @@
   qmake ..
   make -j
   ```
-* 目前只有 `Win32` 二进制程序安装包，Linux 暂时无法打包。:confused:（如果有会的大佬可以联系我们 :stuck_out_tongue_winking_eye:）
 ## 运行效果
 ![gif](run.gif)
 ![image](./image/1.png)
