@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     a.installTranslator(&qtGloble);
 
     a.setWindowIcon(QIcon(":/images/images/Mozi.ico"));
-    a.setApplicationVersion("1.0.1.0");
+    a.setApplicationVersion("1.0.1.1");
     a.setOrganizationName("Left Studio");
 
 #ifdef Q_OS_WIN

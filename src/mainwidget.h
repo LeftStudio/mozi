@@ -54,6 +54,8 @@ private slots:
 private:
     Ui::MainWidget *ui;
 
+    bool m_isCheckSuccess = false;
+
     QSettings *m_settings = nullptr;
     My_Updater *m_updater = nullptr;
     My_NetworkManager *m_networkManager = nullptr;
@@ -79,6 +81,8 @@ private:
 
     /* 事件重写 */
     void closeEvent(QCloseEvent *) Q_DECL_OVERRIDE;
+
+    inline void updateForeground(const QColor& color);
 
     static inline void createItem(const QString& text,
                                               const QVariant &data,

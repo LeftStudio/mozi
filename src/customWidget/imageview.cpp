@@ -5,6 +5,7 @@
 
 #include "imageview.h"
 
+#include <QDebug>
 #include <QPainter>
 #include <QVariantAnimation>
 
@@ -45,6 +46,11 @@ void ImageView::setPixmapData(const QByteArray& pixmap)
     m_progress = 255;
 
     m_animation->start();
+}
+
+QColor ImageView::majorColor() const
+{
+    return m_currentPixmap.scaled({3, 3}).toImage().pixelColor(1, 1);
 }
 
 void ImageView::paintEvent(QPaintEvent *event)

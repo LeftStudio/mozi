@@ -20,6 +20,8 @@ public:
     void setPixmapData(const QByteArray &pixmap);
     QPixmap pixmap() const { return m_currentPixmap; }
 
+    QColor majorColor() const;
+
 signals:
 
 protected:

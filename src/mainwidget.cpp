@@ -37,7 +37,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     this->refresh();
 
-    if(m_updater->checkUpdate())
+    if((m_isCheckSuccess = m_updater->checkUpdate()))
     {
         if(m_updater->isNeedUpdate())
             m_toast->toast(QString("发现新版本:%1，点击Mozi 2021跳转到链接")
@@ -210,7 +210,7 @@ bool MainWidget::eventFilter(QObject *obj, QEvent *event)
     {
         if(event->type() == QEvent::MouseButtonRelease)
         {
-            if(m_updater->checkUpdate() && m_updater->isNeedUpdate())
+            if(m_isCheckSuccess && m_updater->isNeedUpdate())
                 QDesktopServices::openUrl(m_updater->downloadUrl());
             else
             {
@@ -236,6 +236,15 @@ void MainWidget::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
+void MainWidget::updateForeground(const QColor &color)
+{
+    const double gray = (0.299 * color.red() + 0.587 * color.green()
+                         + 0.114 * color.blue()) / 255;
+
+    ui->poetryLabel->setStyleSheet(gray > 0.4 ? "color:black;" : "color:white;");
+    ui->aboutLabel->setStyleSheet(ui->poetryLabel->styleSheet());
+}
+
 void MainWidget::createItem(const QString &text, const QVariant& data,
                             QListWidget *parent)
 {
@@ -253,6 +262,7 @@ void MainWidget::refresh()
     QObject::connect(reply, &QNetworkReply::finished, this,
                      [this, reply] {
                          ui->mainPage->setPixmapData(reply->readAll());
+                         this->updateForeground(ui->mainPage->majorColor());
                          reply->deleteLater();
                      });
 

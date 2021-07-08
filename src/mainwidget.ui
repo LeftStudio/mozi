@@ -22,7 +22,7 @@
   <property name="styleSheet">
    <string notr="true">QWidget
 {
-color:black;
+
 }
 
 QScrollArea {
