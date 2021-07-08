@@ -78,7 +78,7 @@ jobs:
           Compress-Archive -Path ${env:archiveName} Mozi-${env:archiveName}'.zip'
           # 记录环境变量packageName给后续step
           $name = ${env:archiveName}
-          echo "::set-env name=packageName::$name"
+          echo "name=packageName" >> $name
           # 打印环境变量packageName
           Write-Host 'packageName:'${env:packageName}
       # tag 查询github-Release
@@ -134,7 +134,7 @@ jobs:
           # upUrl不为空，导出就完事
           if (${env:upUrl}.Length -gt 0) {
               $v=${env:upUrl}
-              echo "::set-env name=uploadUrl::$v"
+              echo "name=uploadUrl" >> $v
               return
           } 
           [string]$tag = ${env:ref}.Substring(${env:ref}.LastIndexOf('/') + 1)
@@ -142,7 +142,7 @@ jobs:
           $response = Invoke-RestMethod -Uri $url -Method Get
           [string]$latestUpUrl = $response.upload_url
           Write-Host 'latestUpUrl:'$latestUpUrl
-          echo "::set-env name=uploadUrl::$latestUpUrl"
+          echo "name=uploadUrl" >> $latestUpUrl
           Write-Host 'env uploadUrl:'${env:uploadUrl}
       # tag 上传Release
       - name: uploadRelease
