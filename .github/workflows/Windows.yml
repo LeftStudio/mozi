@@ -85,18 +85,21 @@ jobs:
       # 第三步：发布 Release
       - name: Create Release # 创建Release，可以在仓库看到一个个版本
         id: create_release
+        if: startsWith(github.event.ref, 'refs/tags/') && steps.queryReleaseWin.outputs.needCreateRelease == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 之前GitHub添加的Token
         with:
           tag_name: ${{ github.ref }} # (tag)标签名称
           release_name: Release ${{ github.ref }}
+          body: ${{ github.event.head_commit.message }}
           draft: false # 是否是草稿
           prerelease: false # 是否是预发布
 
-      # 第四步：上传构建结果到 Release（把打包的tgz上传到Release）
+      # 第四步：上传构建结果到 Release（把打包的zip上传到Release）
       - name: Upload Release Asset
         id: upload-release-asset
+        if: startsWith(github.event.ref, 'refs/tags/')
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -104,4 +107,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # 上传地址，通过创建Release获取到的
           asset_path: ./${{ env.packageName }}.zip
           asset_name: ${{ env.packageName }}.zip
-          asset_content_type: application/x-tgz
+          asset_content_type: application/zip
