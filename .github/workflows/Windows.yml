@@ -134,7 +134,7 @@ jobs:
           # upUrl不为空，导出就完事
           if (${env:upUrl}.Length -gt 0) {
               $v=${env:upUrl}
-              echo "{uploadUrl}=$v" >> GITHUB_ENV
+              echo "uploadUrl=${{v}}" >> GITHUB_ENV
               return
           } 
           [string]$tag = ${env:ref}.Substring(${env:ref}.LastIndexOf('/') + 1)
@@ -142,7 +142,7 @@ jobs:
           $response = Invoke-RestMethod -Uri $url -Method Get
           [string]$latestUpUrl = $response.upload_url
           Write-Host 'latestUpUrl:'$latestUpUrl
-          echo "{uploadUrl}=$latestUpUrl" >> GITHUB_ENV
+          echo "uploadUrl=${{latestUpUrl}}" >> GITHUB_ENV
           Write-Host 'env uploadUrl:'${env:uploadUrl}
       # tag 上传Release
       - name: uploadRelease
