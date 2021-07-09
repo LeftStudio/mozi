@@ -388,6 +388,12 @@ background-color:#05B8CC;
        </item>
        <item>
         <widget class="QSplitter" name="splitter_2">
+         <property name="styleSheet">
+          <string notr="true">QSplitter::handle
+{
+background:rgb(227,227,227);
+}</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -645,6 +651,18 @@ background-color:#05B8CC;
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="leftMargin">
+          <number>5</number>
+         </property>
+         <property name="rightMargin">
+          <number>5</number>
+         </property>
+         <property name="bottomMargin">
+          <number>5</number>
+         </property>
          <item>
           <widget class="QPushButton" name="returnBtn">
            <property name="minimumSize">
