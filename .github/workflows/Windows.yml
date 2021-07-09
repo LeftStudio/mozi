@@ -1,5 +1,5 @@
 # Mozi Windows Build CI
-name: Windows
+name: Windows Build
 on: 
   # push代码时触发workflow
   push:
@@ -142,6 +142,7 @@ jobs:
           $response = Invoke-RestMethod -Uri $url -Method Get
           [string]$latestUpUrl = $response.upload_url
           Write-Host 'latestUpUrl:'$latestUpUrl
+          echo latestUpUrl=$latestUpUrl
           echo "uploadUrl=$latestUpUrl" >> GITHUB_ENV
           Write-Host 'env uploadUrl:'${env:uploadUrl}
       # tag 上传Release
