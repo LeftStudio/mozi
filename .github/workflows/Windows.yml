@@ -70,7 +70,7 @@ jobs:
           # tag 打包
       - name: package
         id: package
-#        if: startsWith(github.event.ref, 'refs/tags/')
+        if: startsWith(github.event.ref, 'refs/tags/')
         env:
           archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_arch }}
           msvcArch: ${{ matrix.msvc_arch }}
