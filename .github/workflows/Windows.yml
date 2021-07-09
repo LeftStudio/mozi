@@ -6,12 +6,14 @@ on:
     # 忽略README.md
     paths-ignore:
       - 'README.md'
+      - 'image/*'
       - 'LICENSE'
   # pull_request时触发workflow
   pull_request:
     # 忽略README.md
     paths-ignore:
       - 'README.md'
+      - 'image/*'
       - 'LICENSE'
 jobs:
   build:
@@ -60,45 +62,36 @@ jobs:
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
           qmake
           nmake
-      # tag 打包
-      - name: Package
-        if: startsWith(github.event.ref, 'refs/tags/')
+          echo winSdkDir=%WindowsSdkDir% >> %GITHUB_ENV%
+          echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
+          echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
+          echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
+
+          # tag 打包
+      - name: package
+        id: package
+#        if: startsWith(github.event.ref, 'refs/tags/')
         env:
-          VCINSTALLDIR: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC'
-          archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
+          archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_arch }}
+          msvcArch: ${{ matrix.msvc_arch }}
         shell: pwsh
         run: |
-          # 创建文件夹
-          New-Item -ItemType Directory ${env:archiveName}
-          # 拷贝exe
-          Copy-Item release\${env:targetName} ${env:archiveName}\
-          # 拷贝依赖
-          windeployqt --qmldir . ${env:archiveName}\${env:targetName}
-          # 打包zip
-          Compress-Archive -Path ${env:archiveName} Mozi-${env:archiveName}'.zip'
-          # 记录环境变量packageName给后续step
-          $name = ${env:archiveName}
-          echo "packageName=${{env.archiveName}}" >> $GITHUB_ENV
-          # 打印环境变量packageName
-          Write-Host 'packageName:'${env:packageName}
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
+          # 记录packageName给后续step
+           $name = ${env:archiveName}
+           echo "::set-output name=packageName::$name"
+      # 上传artifacts          
+      - uses: actions/upload-artifact@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ steps.package.outputs.packageName }}
+          path: ${{ steps.package.outputs.packageName }}.zip
+      # tag 上传Release
+      - name: uploadRelease
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./${{ env.packageName }}.zip
-          asset_name: ${{ env.packageName }}.zip
-          asset_content_type: application/zip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.package.outputs.packageName }}.zip
+          asset_name: ${{ steps.package.outputs.packageName }}.zip
+          tag: ${{ github.ref }}
+          overwrite: true
