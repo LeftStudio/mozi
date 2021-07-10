@@ -35,6 +35,8 @@ private:
 
     QVariantAnimation *m_animation = nullptr;
 
+    static bool blurPixmap(QPixmap& pixmap);
+
     static const QPixmap transparentPixmap(const QPixmap& pixmap, int alpha);
 };
 

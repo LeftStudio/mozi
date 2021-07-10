@@ -5,9 +5,14 @@
 
 #include "imageview.h"
 
-#include <QDebug>
 #include <QPainter>
 #include <QVariantAnimation>
+
+QT_BEGIN_NAMESPACE
+extern Q_WIDGETS_EXPORT void qt_blurImage(QPainter *p, QImage &blurImage,
+                                          qreal radius, bool quality,
+                                          bool alphaOnly, int transposed = 0);
+QT_END_NAMESPACE
 
 ImageView::ImageView(QWidget *parent)
     : QWidget(parent),
@@ -33,6 +38,9 @@ void ImageView::setPixmapData(const QByteArray& pixmap)
 {
     m_lastPixmap = m_currentPixmap;
     m_currentPixmap.loadFromData(pixmap);
+
+    if(!blurPixmap(m_currentPixmap))
+        return;
 
     if(m_lastPixmap.isNull())
     {
@@ -61,12 +69,23 @@ void ImageView::paintEvent(QPaintEvent *event)
         return;
 
     QPainter painter(this);
-
-    painter.setRenderHint(QPainter::Antialiasing);
     painter.drawPixmap(this->rect(), m_currentPixmap);
 
     if(m_progress && !m_lastPixmap.isNull())
         painter.drawPixmap(this->rect(), transparentPixmap(m_lastPixmap, m_progress));
+}
+
+bool ImageView::blurPixmap(QPixmap &pixmap)
+{
+    if(pixmap.isNull())
+        return false;
+
+    QImage image(pixmap.toImage());
+
+    QPainter painter(&pixmap);
+    qt_blurImage(&painter, image, 30, true, false);     //blur radius: 60px
+
+    return true;
 }
 
 const QPixmap ImageView::transparentPixmap(const QPixmap &pixmap, int alpha)
