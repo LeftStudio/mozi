@@ -34,7 +34,7 @@ jobs:
             qt_arch_install: msvc2019_64 
 
     env:
-      targetName: Mozi                          # 程序名
+      targetName: Mozi.exe                                               # 程序名
     # 步骤
     steps:
       # 安装Qt
@@ -67,11 +67,11 @@ jobs:
       - name: package
         id: package      
         env:
-          archiveName: ${{ env:targetName }}-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}   # 打包包名
+          archiveName: Mozi-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}   # 打包包名
           msvcArch: ${{ matrix.msvc_arch }}          
         shell: pwsh
         run: |
-          & scripts\windows-publish.ps1 ${env:archiveName} ${{ env:targetName }}.exe
+          & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
           # 记录packageName给后续step
            $name = ${env:archiveName}
            echo "::set-output name=packageName::$name"
