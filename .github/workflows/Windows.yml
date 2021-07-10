@@ -62,30 +62,29 @@ jobs:
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
           qmake
           nmake
-          echo winSdkDir=%WindowsSdkDir% >> %GITHUB_ENV%
-          echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
-          echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
-          echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
 
       # tag 打包
       - name: package
         id: package
         if: startsWith(github.event.ref, 'refs/tags/')
         env:
+          VCINSTALLDIR: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC'
           archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_arch }}
-          msvcArch: ${{ matrix.msvc_arch }}
         shell: pwsh
         run: |
+          # 创建文件夹
           New-Item -ItemType Directory ${env:archiveName}
-          Copy-Item .\${env:targetName} ${env:archiveName}\
+          # 拷贝exe
+          Copy-Item ${env:targetName} ${env:archiveName}\
+          # 拷贝依赖
           windeployqt --qmldir . ${env:archiveName}\${env:targetName}
-          
+          # 打包zip
           Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
-          echo "packageName=${{env:archiveName}}" >> GITHUB_ENV
-          Write-Host 'packageName:'${env:packageName}
-
+          # 记录环境变量packageName给后续step
           $name = ${env:archiveName}
-          echo "::set-output name=packageName::$name"
+          echo "::set-env name=packageName::$name"
+          # 打印环境变量packageName
+          Write-Host 'packageName:'${env:packageName}
 
       # 上传artifacts          
       - uses: actions/upload-artifact@v2
