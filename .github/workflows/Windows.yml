@@ -29,7 +29,7 @@ jobs:
             msvc_arch: x86
             qt_arch_install: msvc2019
     env:
-      targetName: HelloActions-Qt.exe
+      targetName: Mozi.exe
     # 步骤
     steps:
       # 安装Qt
