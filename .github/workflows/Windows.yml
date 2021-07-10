@@ -28,8 +28,13 @@ jobs:
             qt_arch: win32_msvc2019
             msvc_arch: x86
             qt_arch_install: msvc2019
+          - qt_ver: 5.15.2          
+            qt_arch: win64_msvc2019_64
+            msvc_arch: x64
+            qt_arch_install: msvc2019_64 
+
     env:
-      targetName: Mozi.exe
+      targetName: Mozi                          # 程序名
     # 步骤
     steps:
       # 安装Qt
@@ -62,14 +67,15 @@ jobs:
       - name: package
         id: package      
         env:
-          archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
+          archiveName: ${env:targetName}-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}   # 打包包名
           msvcArch: ${{ matrix.msvc_arch }}          
         shell: pwsh
         run: |
-          & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
+          & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}.exe
           # 记录packageName给后续step
            $name = ${env:archiveName}
-           echo "::set-output name=packageName::$name"       
+           echo "::set-output name=packageName::$name"
+           
       # tag 查询github-Release
       # 上传artifacts          
       - uses: actions/upload-artifact@v2
