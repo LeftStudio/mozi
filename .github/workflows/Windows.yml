@@ -76,7 +76,8 @@ jobs:
           msvcArch: ${{ matrix.msvc_arch }}
         shell: pwsh
         run: |
-           # 创建文件夹
+
+        
           New-Item -ItemType Directory ${env:archiveName}
           # 拷贝exe
           Copy-Item .\${env:targetName} ${env:archiveName}\
