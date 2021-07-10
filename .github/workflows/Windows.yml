@@ -67,11 +67,11 @@ jobs:
       - name: package
         id: package      
         env:
-          archiveName: ${{env:targetName}}-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}   # 打包包名
+          archiveName: ${{ env:targetName }}-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}   # 打包包名
           msvcArch: ${{ matrix.msvc_arch }}          
         shell: pwsh
         run: |
-          & scripts\windows-publish.ps1 ${env:archiveName} ${{env:targetName}}.exe
+          & scripts\windows-publish.ps1 ${env:archiveName} ${{ env:targetName }}.exe
           # 记录packageName给后续step
            $name = ${env:archiveName}
            echo "::set-output name=packageName::$name"
