@@ -76,10 +76,23 @@ jobs:
           msvcArch: ${{ matrix.msvc_arch }}
         shell: pwsh
         run: |
-          & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
-          # 记录packageName给后续step
-           $name = ${env:archiveName}
-           echo "::set-output name=packageName::$name"
+           # 创建文件夹
+          New-Item -ItemType Directory ${env:archiveName}
+          # 拷贝exe
+          Copy-Item .\${env:targetName} ${env:archiveName}\
+          # 拷贝依赖
+          windeployqt --qmldir . ${env:archiveName}\${env:targetName}
+          # 打包zip
+          Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
+          # 记录环境变量packageName给后续step
+          # $name = ${env:archiveName}
+          echo "packageName=${{env:archiveName}}" >> GITHUB_ENV
+          # 打印环境变量packageName
+          Write-Host 'packageName:'${env:packageName}
+
+          $name = ${env:archiveName}
+          echo "::set-output name=packageName::$name"
+
       # 上传artifacts          
       - uses: actions/upload-artifact@v2
         with:
