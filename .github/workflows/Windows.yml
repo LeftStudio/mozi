@@ -51,7 +51,7 @@ jobs:
         with:
           fetch-depth: 1
       # msvc编译
-      - name: msvc-build
+      - name: MSVC Build
         id: build
         shell: cmd
         run: |
@@ -64,8 +64,9 @@ jobs:
           echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
 
       # 打包 
-      - name: package
-        id: package      
+      - name: Package
+        id: package
+        if: startsWith(github.event.ref, 'refs/tags/')    
         env:
           archiveName: Mozi-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}   # 打包包名
           msvcArch: ${{ matrix.msvc_arch }}          
@@ -83,7 +84,7 @@ jobs:
           name: ${{ steps.package.outputs.packageName }}
           path: ${{ steps.package.outputs.packageName }}.zip
       # tag 上传Release
-      - name: uploadRelease
+      - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
