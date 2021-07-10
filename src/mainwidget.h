@@ -17,6 +17,7 @@
 #define LINE_SPACING 50
 
 class QGraphicsDropShadowEffect;
+class QGraphicsBlurEffect;
 class QListWidgetItem;
 class QProgressBar;
 class QListWidget;

@@ -241,8 +241,22 @@ void MainWidget::updateForeground(const QColor &color)
     const double gray = (0.299 * color.red() + 0.587 * color.green()
                          + 0.114 * color.blue()) / 255;
 
-    ui->poetryLabel->setStyleSheet(gray > 0.4 ? "color:black;" : "color:white;");
+    static QString colorString;
+
+    if(colorString.contains(gray > 0.6 ? "black" : "white"))
+        return;
+
+    colorString = gray > 0.6 ? "black" : "white";
+
+    ui->poetryLabel->setStyleSheet(QString("color:%1;").arg(colorString));
     ui->aboutLabel->setStyleSheet(ui->poetryLabel->styleSheet());
+
+    ui->collectionPageBtn->setIcon(QIcon(
+        QString(":/images/images/like-%1.png").arg(colorString)));
+    ui->searchPageBtn->setIcon(QIcon(
+        QString(":/images/images/search-%1.png").arg(colorString)));
+    ui->refreshBtn->setIcon(QIcon(
+        QString(":/images/images/refresh-%1.png").arg(colorString)));
 }
 
 void MainWidget::createItem(const QString &text, const QVariant& data,

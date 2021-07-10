@@ -1,12 +1,15 @@
 <RCC>
     <qresource prefix="/images">
         <file>images/Mozi.ico</file>
-        <file>images/refresh.ico</file>
-        <file>images/search.ico</file>
         <file>images/default_background.png</file>
         <file>images/left.png</file>
-        <file>images/like.png</file>
         <file>images/unlike.png</file>
+        <file>images/like-white.png</file>
+        <file>images/refresh-white.png</file>
+        <file>images/search-white.png</file>
+        <file>images/like-black.png</file>
+        <file>images/refresh-black.png</file>
+        <file>images/search-black.png</file>
     </qresource>
     <qresource prefix="/tr">
         <file>tr/qtbase_zh_CN.qm</file>

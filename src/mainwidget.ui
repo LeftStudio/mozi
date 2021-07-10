@@ -120,7 +120,7 @@ QPushButton:hover
 border-style:none;
 padding:3px;
 border-radius:19px;
-border:1px solid rgb(119,119,119);
+border:1px solid white;
 }</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0">
@@ -157,7 +157,7 @@ border:1px solid rgb(119,119,119);
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/search.ico</normaloff>:/images/images/search.ico</iconset>
+             <normaloff>:/images/images/search-black.png</normaloff>:/images/images/search-black.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -198,12 +198,12 @@ border:1px solid rgb(119,119,119);
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/like.png</normaloff>:/images/images/like.png</iconset>
+             <normaloff>:/images/images/like-black.png</normaloff>:/images/images/like-black.png</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>27</width>
-             <height>27</height>
+             <width>25</width>
+             <height>25</height>
             </size>
            </property>
            <property name="flat">
@@ -239,7 +239,7 @@ border:1px solid rgb(119,119,119);
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/refresh.ico</normaloff>:/images/images/refresh.ico</iconset>
+             <normaloff>:/images/images/refresh-black.png</normaloff>:/images/images/refresh-black.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -475,9 +475,8 @@ background:rgb(227,227,227);
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/images/images/dislike.ico</normaloff>
-                 <selectedon>:/images/images/unlike.png</selectedon>:/images/images/dislike.ico</iconset>
+                <iconset resource="../resource/rec.qrc">
+                 <normaloff>:/images/images/unlike.png</normaloff>:/images/images/unlike.png</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -720,7 +719,7 @@ background-color:#05B8CC;
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/like.png</normaloff>:/images/images/like.png</iconset>
+             <normaloff>:/images/images/like-black.png</normaloff>:/images/images/like-black.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -792,7 +791,7 @@ padding:7px;
            </property>
            <property name="icon">
             <iconset resource="../resource/rec.qrc">
-             <normaloff>:/images/images/search.ico</normaloff>:/images/images/search.ico</iconset>
+             <normaloff>:/images/images/search-black.png</normaloff>:/images/images/search-black.png</iconset>
            </property>
            <property name="iconSize">
             <size>
