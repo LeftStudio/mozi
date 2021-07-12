@@ -1,7 +1,20 @@
 name: Linux-Build
 
-on: [push]
-
+on: 
+  # push代码时触发workflow
+  push:
+    # 忽略README.md
+    paths-ignore:
+      - 'image/*'
+      - 'README.md'
+      - 'LICENSE'
+  # pull_request时触发workflow
+  pull_request:
+    # 忽略README.md
+    paths-ignore:
+      - 'image/*'
+      - 'README.md'
+      - 'LICENSE'
 jobs:
   build:
     runs-on: ubuntu-latest
