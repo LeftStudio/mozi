@@ -58,7 +58,8 @@ void ImageView::setPixmapData(const QByteArray& pixmap)
 
 QColor ImageView::majorColor() const
 {
-    return m_currentPixmap.scaled({3, 3}).toImage().pixelColor(1, 1);
+    return m_currentPixmap.isNull() ? Qt::white : m_currentPixmap.scaled({3, 3})
+                                                      .toImage().pixelColor(1, 1);
 }
 
 void ImageView::paintEvent(QPaintEvent *event)
