@@ -31,6 +31,10 @@
 ![image](./image/3.png)
 ![image](./image/4.png)
 
+## 引用
+* 诗词推荐来自：[今日诗词 API](https://www.jinrishici.com/)
+* 搜索资源来自：[百度 汉语](https://hanyu.baidu.com/)
+
 ## 关于我们
 * Left Studio 是一个中学生组成的开源团队，我们希望能开发出更贴近人们生活的，有温度的软件。
 * 项目负责人：qygw（QQ：852348063）
