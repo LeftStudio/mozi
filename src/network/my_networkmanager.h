@@ -10,10 +10,10 @@
 
 #include <QObject>
 #include <QUrlQuery>
-#include <QNetworkReply>
 
 typedef QList<Poetry> PoetryList;
 
+class QNetworkReply;
 class QNetworkAccessManager;
 
 class My_NetworkManager : public QObject

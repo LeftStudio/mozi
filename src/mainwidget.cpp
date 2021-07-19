@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QNetworkReply>
 #include <QDesktopServices>
 #include <QGraphicsDropShadowEffect>
 

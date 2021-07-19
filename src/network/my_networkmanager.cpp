@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
+#include <QRegularExpression>
 #include <QNetworkAccessManager>
 
 My_NetworkManager::My_NetworkManager(QObject *parent) :
