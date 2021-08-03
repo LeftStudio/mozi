@@ -2,7 +2,7 @@
 ![license](https://img.shields.io/badge/license-GPL--3.0-red.svg?style=flat-square)
 ![release](https://img.shields.io/github/v/release/LeftStudio/mozi.svg?style=flat-square&color=brightgreen)
 ![windows](https://github.com/LeftStudio/mozi/workflows/Windows-Build/badge.svg?style=flat-square)
-![windows](https://github.com/LeftStudio/mozi/workflows/Linux-Build/badge.svg?style=flat-square)
+![linux](https://github.com/LeftStudio/mozi/workflows/Linux-Build/badge.svg?style=flat-square)
 
 ## 项目介绍
 * 开发环境：`Qt 5.15.2`
