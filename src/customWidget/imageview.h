@@ -28,6 +28,8 @@ protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 
 private:
+    static inline QRect fitRect(const QRect &screen, QSize size);
+
     int m_progress = 0;
 
     QPixmap m_currentPixmap;

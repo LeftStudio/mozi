@@ -247,7 +247,7 @@ void MainWidget::updateForeground(const QColor &color)
     if(colorString.contains(gray > 0.6 ? "black" : "white"))
         return;
 
-    colorString = gray > 0.6 ? "black" : "white";
+    colorString = gray > 0.5 ? "black" : "white";
 
     ui->poetryLabel->setStyleSheet(QString("color:%1;").arg(colorString));
     ui->aboutLabel->setStyleSheet(ui->poetryLabel->styleSheet());

@@ -58,8 +58,8 @@ void ImageView::setPixmapData(const QByteArray& pixmap)
 
 QColor ImageView::majorColor() const
 {
-    return m_currentPixmap.isNull() ? Qt::white : m_currentPixmap.scaled({3, 3})
-                                                      .toImage().pixelColor(1, 1);
+    return m_currentPixmap.isNull() ? Qt::white :
+               m_currentPixmap.scaled({3, 3}).toImage().pixelColor(1, 1);
 }
 
 void ImageView::paintEvent(QPaintEvent *event)
@@ -70,10 +70,24 @@ void ImageView::paintEvent(QPaintEvent *event)
         return;
 
     QPainter painter(this);
-    painter.drawPixmap(this->rect(), m_currentPixmap);
+    painter.drawPixmap(fitRect(this->rect(), m_currentPixmap.size()), m_currentPixmap);
 
     if(m_progress && !m_lastPixmap.isNull())
-        painter.drawPixmap(this->rect(), transparentPixmap(m_lastPixmap, m_progress));
+        painter.drawPixmap(fitRect(this->rect(), m_lastPixmap.size()),
+                           transparentPixmap(m_lastPixmap, m_progress));
+}
+
+QRect ImageView::fitRect(const QRect &screen, QSize size)
+{
+    if(!screen.isValid())
+        return {};
+
+    QRect ret;
+
+    ret.setSize(size.scaled(screen.size(), Qt::KeepAspectRatioByExpanding));
+    ret.moveCenter(screen.center());
+
+    return ret;
 }
 
 bool ImageView::blurPixmap(QPixmap &pixmap)
@@ -84,7 +98,7 @@ bool ImageView::blurPixmap(QPixmap &pixmap)
     QImage image(pixmap.toImage());
 
     QPainter painter(&pixmap);
-    qt_blurImage(&painter, image, 30, true, false);     //blur radius: 60px
+    qt_blurImage(&painter, image, 50, true, false);     //blur radius: 60px
 
     return true;
 }
